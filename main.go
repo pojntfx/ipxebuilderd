@@ -1,9 +1,3 @@
-//go:generate mkdir -p vendor/ipxe/dist
-//go:generate rm -rf vendor/ipxe/src
-//go:generate git clone https://github.com/pojntfx/ipxe.git vendor/ipxe/src
-//go:generate arc -overwrite archive vendor/ipxe/dist/ipxe.tar.gz vendor/ipxe/src
-//go:generate statik -src vendor/ipxe/dist
-
 package main
 
 import (
@@ -12,11 +6,8 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/mholt/archiver/v3"
-	"github.com/rakyll/statik/fs"
+	"github.com/pojntfx/ipxebuilderd/pkg/utils"
 	uuid "github.com/satori/go.uuid"
-
-	_ "github.com/pojntfx/ipxebuilderd/statik"
 )
 
 var (
@@ -36,30 +27,13 @@ autoboot`
 )
 
 func main() {
-	statikFS, err := fs.New()
-	if err != nil {
-		log.Fatal(err)
+	extractor := utils.Extractor{
+		BasePath:       basePath,
+		ArchivePath:    archivePath,
+		ArchiveOutPath: archiveOutPath,
 	}
 
-	data, err := fs.ReadFile(statikFS, "/ipxe.tar.gz")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := os.MkdirAll(archivePath, 0777); err != nil {
-		log.Fatal(err)
-	}
-
-	archiveOut, err := os.Create(archiveOutPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if _, err := archiveOut.Write(data); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := archiver.Unarchive(archiveOutPath, basePath); err != nil {
+	if err := extractor.Extract(); err != nil {
 		log.Fatal(err)
 	}
 
