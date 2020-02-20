@@ -37,12 +37,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	embedFile, err := os.Create(embedPath)
-	if err != nil {
+	embedder := utils.Embedder{
+		File: embedPath,
+	}
+
+	if err := embedder.Init(); err != nil {
 		log.Fatal(err)
 	}
 
-	if _, err := embedFile.Write([]byte(embedScript)); err != nil {
+	if err := embedder.Write(embedScript); err != nil {
 		log.Fatal(err)
 	}
 
