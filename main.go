@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -52,10 +54,20 @@ func main() {
 		ExecPath: execPath,
 	}
 
-	out, err := compiler.Build(embedPath, platform, driver, extension)
+	out, outPath, err := compiler.Build(embedPath, platform, driver, extension)
 	if err != nil {
-		log.Fatal(out, err)
+		log.Fatal(out, outPath, err)
 	}
 
-	log.Println(out)
+	outFile, err := os.Open(outPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	product, err := ioutil.ReadAll(outFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(product)
 }
