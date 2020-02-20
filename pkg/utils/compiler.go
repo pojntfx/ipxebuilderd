@@ -11,14 +11,16 @@ type Compiler struct {
 }
 
 // Build builds iPXE
-func (c *Compiler) Build(embedPath, platform, driver, extension string) (string, error) {
+func (c *Compiler) Build(embedPath, platform, driver, extension string) (string, string, error) {
+	path := platform + "/" + driver + "." + extension
+
 	if err := os.Setenv("EMBED", embedPath); err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	cmd := exec.Command("make", platform+"/"+driver+"."+extension)
+	cmd := exec.Command("make", path)
 	cmd.Dir = c.ExecPath
 	out, err := cmd.CombinedOutput()
 
-	return string(out), err
+	return string(out), path, err
 }
