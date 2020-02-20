@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -18,16 +19,22 @@ var (
 	embedPath      = filepath.Join(execPath, "main.ipxe")
 	archiveOutPath = filepath.Join(archivePath, "ipxe.tar.gz")
 
-	platform  = "bin-x86_64-efi"
-	driver    = "ipxe"
-	extension = "efi"
-
-	embedScript = `#!ipxe
-
-autoboot`
+	platform  string
+	driver    string
+	extension string
+	script    string
 )
 
 func main() {
+	flag.StringVar(&platform, "platform", "bin-x86_64-efi", "The platform to build iPXE for")
+	flag.StringVar(&driver, "driver", "ipxe", "The driver to build iPXE for")
+	flag.StringVar(&extension, "extension", "efi", "The extension to build iPXE for")
+	flag.StringVar(&script, "script", `#!ipxe
+
+autoboot`, "The script to embed")
+
+	flag.Parse()
+
 	extractor := utils.Extractor{
 		BasePath:       basePath,
 		ArchivePath:    archivePath,
@@ -46,7 +53,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := embedder.Write(embedScript); err != nil {
+	if err := embedder.Write(script); err != nil {
 		log.Fatal(err)
 	}
 
