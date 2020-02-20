@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/pojntfx/ipxebuilderd/pkg/utils"
@@ -49,16 +48,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := os.Setenv("EMBED", embedPath); err != nil {
-		log.Fatal(err)
+	compiler := utils.Compiler{
+		ExecPath: execPath,
 	}
 
-	cmd := exec.Command("make", platform+"/"+driver+"."+extension)
-	cmd.Dir = execPath
-	out, err := cmd.CombinedOutput()
+	out, err := compiler.Build(embedPath, platform, driver, extension)
 	if err != nil {
-		log.Fatal(string(out), err)
+		log.Fatal(out, err)
 	}
 
-	log.Println(string(out))
+	log.Println(out)
 }
