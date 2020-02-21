@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -61,20 +60,25 @@ autoboot`, "The script to embed")
 		ExecPath: execPath,
 	}
 
-	out, outPath, err := compiler.Build(embedPath, platform, driver, extension)
-	if err != nil {
-		log.Fatal(out, outPath, err)
+	stdoutChan, stderrChan, doneChan, errChan := make(chan string), make(chan string), make(chan string), make(chan error)
+
+	go compiler.Build(embedPath, platform, driver, extension, stdoutChan, stderrChan, doneChan, errChan)
+
+	var outPath string
+
+Main:
+	for {
+		select {
+		case outMsg := <-stdoutChan:
+			log.Println("Status:", outMsg)
+		case outErr := <-stderrChan:
+			log.Println("Warning:", outErr)
+		case outPath = <-doneChan:
+			break Main
+		case err := <-errChan:
+			log.Fatal("Error:", err)
+		}
 	}
 
-	outFile, err := os.Open(outPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	product, err := ioutil.ReadAll(outFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(product)
+	fmt.Println("Done! Out path:", outPath)
 }
