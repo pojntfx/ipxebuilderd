@@ -3,24 +3,34 @@ package utils
 import (
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 // Compiler is a compiler for iPXE
 type Compiler struct {
-	ExecPath string
+	ExecPath            string
+	statusCommandRunner StatusCommandRunner
+}
+
+// Init sets up the compiler
+func (c *Compiler) Init() {
+	c.statusCommandRunner = StatusCommandRunner{}
 }
 
 // Build builds iPXE
-func (c *Compiler) Build(embedPath, platform, driver, extension string) (string, string, error) {
+func (c *Compiler) Build(embedPath, platform, driver, extension string, stdoutChan, stderrChan chan string, doneChan chan string, errChan chan error) {
 	path := platform + "/" + driver + "." + extension
 
 	if err := os.Setenv("EMBED", embedPath); err != nil {
-		return "", "", err
+		errChan <- err
+
+		return
 	}
 
 	cmd := exec.Command("make", path)
 	cmd.Dir = c.ExecPath
-	out, err := cmd.CombinedOutput()
 
-	return string(out), path, err
+	c.statusCommandRunner.Run(cmd, stdoutChan, stderrChan, errChan)
+
+	doneChan <- filepath.Join(c.ExecPath, path)
 }
