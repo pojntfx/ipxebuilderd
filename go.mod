@@ -3,6 +3,7 @@ module github.com/pojntfx/ipxebuilderd
 go 1.13
 
 require (
+	github.com/cheggaaa/pb/v3 v3.0.4
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/mholt/archiver/v3 v3.3.0

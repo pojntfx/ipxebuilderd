@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/cheggaaa/pb/v3"
 	"github.com/pojntfx/ipxebuilderd/pkg/utils"
 	uuid "github.com/satori/go.uuid"
 )
@@ -22,6 +22,8 @@ var (
 	driver    string
 	extension string
 	script    string
+
+	totalCompileSteps = 2247
 )
 
 func main() {
@@ -64,21 +66,27 @@ autoboot`, "The script to embed")
 
 	go compiler.Build(embedPath, platform, driver, extension, stdoutChan, stderrChan, doneChan, errChan)
 
+	log.Println("Building iPXE")
+
+	bar := pb.Full.Start(totalCompileSteps)
+
 	var outPath string
 
 Main:
 	for {
 		select {
-		case outMsg := <-stdoutChan:
-			log.Println("Status:", outMsg)
-		case outErr := <-stderrChan:
-			log.Println("Warning:", outErr)
+		case <-stdoutChan:
+			bar.Increment()
+		case <-stderrChan:
+			bar.Increment()
 		case outPath = <-doneChan:
+			bar.Finish()
 			break Main
 		case err := <-errChan:
-			log.Fatal("Error:", err)
+			bar.Finish()
+			log.Fatal("Fatal Error:", err)
 		}
 	}
 
-	fmt.Println("Done! Out path:", outPath)
+	log.Println("iPXE out path:", outPath)
 }
