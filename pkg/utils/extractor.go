@@ -12,15 +12,15 @@ import (
 	"github.com/mholt/archiver"
 	"github.com/rakyll/statik/fs"
 
-	_ "github.com/pojntfx/ipxebuilderd/pkg/utils/statik" // The embedded assets
+	_ "github.com/pojntfx/ipxebuilderd/pkg/utils/statik" // The embedded assets.
 )
 
-// Extractor manages extraction of bundled assets
+// Extractor manages extraction of bundled assets.
 type Extractor struct {
 	BasePath, ArchivePath, ArchiveOutPath string
 }
 
-// Extract extracts the bundled iPXE source code
+// Extract extracts the bundled iPXE source code.
 func (e *Extractor) Extract() error {
 	statikFS, err := fs.New()
 	if err != nil {

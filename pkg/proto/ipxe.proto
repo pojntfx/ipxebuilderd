@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package iPXEBuilder;
 
-// IPXEBuilder manages iPXEs
+// IPXEBuilder manages iPXEs.
 service IPXEBuilder {
   rpc Create(IPXE) returns (stream IPXEStatus) {};
 }
