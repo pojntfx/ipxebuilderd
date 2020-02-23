@@ -15,8 +15,6 @@ message IPXE {
 }
 
 message IPXEStatus {
-  bool Done = 1;
-  int64 TotalSteps = 2;
-  int64 CurrentStep = 3;
+  int64 Delta = 1;
   string Path = 4;
 }

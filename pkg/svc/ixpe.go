@@ -29,8 +29,7 @@ func (i *IPXEBuilder) Extract() error {
 
 // Create creates an iPXE
 func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_CreateServer) error {
-	currentCompileStep := 0
-
+	delta := int64(totalCompileSteps)
 	stdoutChan, stderrChan, doneChan, errChan := make(chan string), make(chan string), make(chan string), make(chan error)
 
 	go i.Builder.Build(req.GetScript(), req.GetPlatform(), req.GetDriver(), req.GetExtension(), stdoutChan, stderrChan, doneChan, errChan)
@@ -40,12 +39,10 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 	for {
 		select {
 		case <-stdoutChan:
-			currentCompileStep++
+			delta--
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
-				Done:        false,
-				TotalSteps:  totalCompileSteps,
-				CurrentStep: int64(currentCompileStep),
-				Path:        "",
+				Delta: delta,
+				Path:  "",
 			}); err != nil {
 				return err
 			}
@@ -54,21 +51,17 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 				return errors.New(stderrErr)
 			}
 
-			currentCompileStep++
+			delta--
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
-				Done:        false,
-				TotalSteps:  totalCompileSteps,
-				CurrentStep: int64(currentCompileStep),
-				Path:        "",
+				Delta: delta,
+				Path:  "",
 			}); err != nil {
 				return err
 			}
 		case outPath := <-doneChan:
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
-				Done:        true,
-				TotalSteps:  totalCompileSteps,
-				CurrentStep: int64(currentCompileStep),
-				Path:        outPath,
+				Delta: delta,
+				Path:  outPath,
 			}); err != nil {
 				return err
 			}
