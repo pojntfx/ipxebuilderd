@@ -1,0 +1,13 @@
+meta:
+  image: pojntfx/ipxebuilderd:latest
+  dev: false
+
+resources:
+  memory: "128Mi"
+  cpu: "512m"
+  maxReplicas: 10
+
+ingress:
+  nodePort: 31440
+  domain: ipxebuilderd.felix.pojtinger.com
+  path: /
