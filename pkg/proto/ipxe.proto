@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package iPXEBuilder;
+
+// IPXEBuilder manages iPXEs
+service IPXEBuilder {
+  rpc Create(IPXE) returns (IPXEPath) {};
+}
+
+message IPXE {
+  string Platform = 1;
+  string Driver = 2;
+  string Extension = 3;
+  string Script = 4;
+}
+
+message IPXEPath { string Path = 1; }
