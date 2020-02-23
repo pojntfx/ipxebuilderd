@@ -1,0 +1,13 @@
+apiVersion: v1
+name: ipxebuilderd
+version: 0.0.1
+description: An iPXE build system.
+type: application
+home: https://pojntfx.github.io/ipxebuilderd/
+sources:
+  - git@github.com:pojntfx/ipxebuilderd.git
+maintainers:
+  - name: Felicitas Pojtinger
+    email: felicitas@pojtinger.com
+    url: https://felicitas.pojtinger.com
+appVersion: 0.0.1

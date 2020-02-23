@@ -19,7 +19,6 @@ COPY ./go.mod ./go.sum ./
 RUN go mod download
 
 COPY ./.dibs.yml ./.dibs.yml
-COPY ./main.go ./main.go
 COPY ./cmd ./cmd
 COPY ./pkg ./pkg
 
@@ -36,4 +35,4 @@ COPY --from=build /app/.bin/ipxebuilderd-* /usr/local/bin/ipxebuilderd
 
 EXPOSE 1440
 
-CMD /bin/ipxebuilderd
+CMD /usr/local/bin/ipxebuilderd
