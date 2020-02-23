@@ -60,7 +60,7 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 			}
 		case outPath := <-doneChan:
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
-				Delta: delta,
+				Delta: 0,
 				Path:  outPath,
 			}); err != nil {
 				return err
