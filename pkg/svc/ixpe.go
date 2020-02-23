@@ -16,18 +16,18 @@ const (
 	totalCompileSteps = 2247
 )
 
-// IPXEBuilder manages iPXEs
+// IPXEBuilder manages iPXEs.
 type IPXEBuilder struct {
 	iPXEBuilder.UnimplementedIPXEBuilderServer
 	Builder *workers.Builder
 }
 
-// Extract extracts the iPXE source code
+// Extract extracts the iPXE source code.
 func (i *IPXEBuilder) Extract() error {
 	return i.Builder.Extract()
 }
 
-// Create creates an iPXE
+// Create creates an iPXE.
 func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_CreateServer) error {
 	delta := int64(totalCompileSteps)
 	stdoutChan, stderrChan, doneChan, errChan := make(chan string), make(chan string), make(chan string), make(chan error)

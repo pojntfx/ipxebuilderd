@@ -6,18 +6,18 @@ import (
 	"path/filepath"
 )
 
-// Compiler is a compiler for iPXE
+// Compiler is a compiler for iPXE.
 type Compiler struct {
 	ExecPath            string
 	statusCommandRunner StatusCommandRunner
 }
 
-// Init sets up the compiler
+// Init sets up the compiler.
 func (c *Compiler) Init() {
 	c.statusCommandRunner = StatusCommandRunner{}
 }
 
-// Build builds iPXE
+// Build builds iPXE.
 func (c *Compiler) Build(embedPath, platform, driver, extension string, stdoutChan, stderrChan chan string, doneChan chan string, errChan chan error) {
 	path := platform + "/" + driver + "." + extension
 

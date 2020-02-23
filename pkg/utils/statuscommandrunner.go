@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-// StatusCommandRunner is a command that returns a status
+// StatusCommandRunner is a command that returns a status.
 type StatusCommandRunner struct {
 }
 
@@ -16,14 +16,14 @@ func (c *StatusCommandRunner) read(reader io.Reader, outChan chan string) {
 	for {
 		line, _, err := bufStdout.ReadLine()
 		if err != nil {
-			return // Don't handle other errors, this just means EOF
+			return // Don't handle other errors, this just means EOF.
 		}
 
 		outChan <- string(line)
 	}
 }
 
-// Run runs the command
+// Run runs the command.
 func (c *StatusCommandRunner) Run(cmd *exec.Cmd, stdoutChan, stderrChan chan string, errChan chan error) {
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {

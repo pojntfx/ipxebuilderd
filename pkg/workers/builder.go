@@ -8,12 +8,12 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-// Builder is a worker that can build iPXEs
+// Builder is a worker that can build iPXEs.
 type Builder struct {
 	BasePath string
 }
 
-// Extract extracts the iPXE source code
+// Extract extracts the iPXE source code.
 func (b *Builder) Extract() error {
 	archivePath := filepath.Join(b.BasePath, "archive")
 
@@ -26,7 +26,7 @@ func (b *Builder) Extract() error {
 	return extractor.Extract()
 }
 
-// Build buils an iPXE
+// Build buils an iPXE.
 func (b *Builder) Build(script, platform, driver, extension string, stdoutChan, stderrChan chan string, doneChan chan string, errChan chan error) {
 	tempPath := filepath.Join(b.BasePath, "..", uuid.NewV4().String())
 
