@@ -4,7 +4,7 @@ package iPXEBuilder;
 
 // IPXEBuilder manages iPXEs
 service IPXEBuilder {
-  rpc Create(IPXE) returns (IPXEPath) {};
+  rpc Create(IPXE) returns (stream IPXEStatus) {};
 }
 
 message IPXE {
@@ -14,4 +14,9 @@ message IPXE {
   string Script = 4;
 }
 
-message IPXEPath { string Path = 1; }
+message IPXEStatus {
+  bool Done = 1;
+  int64 TotalSteps = 2;
+  int64 CurrentStep = 3;
+  string Path = 4;
+}
