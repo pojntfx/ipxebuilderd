@@ -15,7 +15,7 @@ RUN go install github.com/mholt/archiver/cmd/arc
 COPY . .
 
 RUN go generate ./...
-RUN go build -o ipxebuilderd main.go
+RUN go build -o ipxebuilderd cmd/ipxebuilderd/main.go
 
 # Runner container
 FROM debian:buster
