@@ -9,6 +9,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/nwaples/rardecode v1.1.0 // indirect
+	github.com/otiai10/copy v1.0.2
 	github.com/pierrec/lz4 v2.4.1+incompatible // indirect
 	github.com/rakyll/statik v0.1.6
 	github.com/satori/go.uuid v1.2.0

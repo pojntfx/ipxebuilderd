@@ -3,7 +3,9 @@ package workers
 import (
 	"path/filepath"
 
+	"github.com/otiai10/copy"
 	"github.com/pojntfx/ipxebuilderd/pkg/utils"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Builder is a worker that can build iPXEs
@@ -26,7 +28,15 @@ func (b *Builder) Extract() error {
 
 // Build buils an iPXE
 func (b *Builder) Build(script, platform, driver, extension string, stdoutChan, stderrChan chan string, doneChan chan string, errChan chan error) {
-	execPath := filepath.Join(b.BasePath, "src", "src")
+	tempPath := filepath.Join(b.BasePath, "..", uuid.NewV4().String())
+
+	if err := copy.Copy(b.BasePath, tempPath); err != nil {
+		errChan <- err
+
+		return
+	}
+
+	execPath := filepath.Join(tempPath, "src", "src")
 	embedPath := filepath.Join(execPath, "main.ipxe")
 
 	embedder := utils.Embedder{
