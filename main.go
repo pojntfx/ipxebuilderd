@@ -5,24 +5,21 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/cheggaaa/pb/v3"
-	"github.com/pojntfx/ipxebuilderd/pkg/utils"
+	"github.com/pojntfx/ipxebuilderd/pkg/workers"
 	uuid "github.com/satori/go.uuid"
 )
 
 var (
-	basePath       = filepath.Join(os.TempDir(), "ipxebuilderd", uuid.NewV4().String())
-	archivePath    = filepath.Join(basePath, "archive")
-	execPath       = filepath.Join(basePath, "src", "src")
-	embedPath      = filepath.Join(execPath, "main.ipxe")
-	archiveOutPath = filepath.Join(archivePath, "ipxe.tar.gz")
-
 	platform  string
 	driver    string
 	extension string
 	script    string
+)
 
+const (
 	totalCompileSteps = 2247
 )
 
@@ -36,35 +33,17 @@ autoboot`, "The script to embed")
 
 	flag.Parse()
 
-	extractor := utils.Extractor{
-		BasePath:       basePath,
-		ArchivePath:    archivePath,
-		ArchiveOutPath: archiveOutPath,
+	builder := workers.Builder{
+		BasePath: filepath.Join(os.TempDir(), "ipxebuilderd", uuid.NewV4().String()),
 	}
 
-	if err := extractor.Extract(); err != nil {
+	if err := builder.Extract(); err != nil {
 		log.Fatal(err)
-	}
-
-	embedder := utils.Embedder{
-		File: embedPath,
-	}
-
-	if err := embedder.Init(); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := embedder.Write(script); err != nil {
-		log.Fatal(err)
-	}
-
-	compiler := utils.Compiler{
-		ExecPath: execPath,
 	}
 
 	stdoutChan, stderrChan, doneChan, errChan := make(chan string), make(chan string), make(chan string), make(chan error)
 
-	go compiler.Build(embedPath, platform, driver, extension, stdoutChan, stderrChan, doneChan, errChan)
+	go builder.Build(script, platform, driver, extension, stdoutChan, stderrChan, doneChan, errChan)
 
 	log.Println("Building iPXE")
 
@@ -77,7 +56,12 @@ Main:
 		select {
 		case <-stdoutChan:
 			bar.Increment()
-		case <-stderrChan:
+		case err := <-stderrChan: // This needs to be handled manually; `ar` prints to stdout for some reason
+			if !strings.Contains(err, "ar:") {
+				bar.Finish()
+				log.Fatal("Fatal Error:", err)
+				break Main
+			}
 			bar.Increment()
 		case outPath = <-doneChan:
 			bar.Finish()
