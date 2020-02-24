@@ -27,4 +27,4 @@ RUN dibs pipeline build assets
 
 EXPOSE 1440
 
-CMD dibs pipeline test integration lang
+CMD dibs pipeline test unit lang
