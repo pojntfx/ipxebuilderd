@@ -4,7 +4,7 @@ WORKDIR /app
 ARG TARGETPLATFORM
 
 RUN apt update
-RUN apt install -y protobuf-compiler
+RUN apt install -y protobuf-compiler curl
 RUN curl -Lo dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
 RUN chmod +x dibs
 RUN mv dibs /usr/local/bin/dibs
