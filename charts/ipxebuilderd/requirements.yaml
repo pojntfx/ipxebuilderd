@@ -1,0 +1,5 @@
+dependencies:
+  - name: dibs
+    version: 0.0.8
+    repository: https://pojntfx.github.io/charts/
+    condition: meta.dev
