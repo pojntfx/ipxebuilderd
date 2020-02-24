@@ -1,0 +1,6 @@
+dependencies:
+- name: dibs
+  repository: https://pojntfx.github.io/charts/
+  version: 0.0.9
+digest: sha256:6d55e46be2ae7a3477d73f6883f24a4551e99b146bcb6ad2b6b1eb949b9b27ac
+generated: "2020-02-24T23:29:28.395618+01:00"
