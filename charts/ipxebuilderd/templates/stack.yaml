@@ -1,3 +1,17 @@
+{{ if .Values.meta.dev }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ipxebuilder{{ if .Values.meta.dev }}-dev{{ end }}
+data:
+  DIBS_SYNC_GO_GIT_BASE_URL: http://dibs:32000/repos
+  DIBS_SYNC_REDIS_URL: {{ .Release.Name }}-redis-master:{{ .Values.dibs.redis.redisPort }}
+  DIBS_SYNC_REDIS_PREFIX: {{ .Values.dibs.redis.prefix }}
+  DIBS_SYNC_REDIS_PASSWORD: {{ .Values.dibs.redis.password }}
+  TARGETPLATFORM: {{ .Values.dibs.resources.platform }}
+---
+{{ end }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,6 +28,11 @@ spec:
       containers:
         - name: ipxebuilderd{{ if .Values.meta.dev }}-dev{{ end }}
           image: {{ .Values.meta.image }}
+          {{ if .Values.meta.dev }}
+          envFrom:
+            - configMapRef:
+                name: ipxebuilder{{ if .Values.meta.dev }}-dev{{ end }}
+          {{ end }}
           {{ if not .Values.meta.dev }}
           resources:
             limits:
