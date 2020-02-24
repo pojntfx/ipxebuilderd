@@ -1,0 +1,135 @@
+.dibsJob: &dibsJob
+  image: docker:stable
+  services:
+    - name: docker:dind
+      command:
+        - "--experimental"
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_BUILDKIT: 1
+    DOCKER_CLI_EXPERIMENTAL: enabled
+  before_script:
+    # Install curl and tar
+    - apk update
+    - apk add curl tar
+    # Install qemu-user-static
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # Install buildx
+    - curl -Lo docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
+    - chmod +x docker-buildx
+    - mkdir -p ~/.docker/cli-plugins/
+    - mv docker-buildx ~/.docker/cli-plugins/
+    - docker buildx create --name dibs
+    - docker buildx use dibs
+    - docker buildx inspect --bootstrap
+    # Install kubectl
+    - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x kubectl
+    - mv kubectl /usr/local/bin/kubectl
+    # Install Helm
+    - curl -L https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz | tar -zvxf - linux-amd64/helm -O >./helm
+    - chmod +x helm
+    - mv helm /usr/local/bin/helm
+    - helm init --client-only
+    # Install Skaffold
+    - curl -L https://storage.googleapis.com/skaffold/builds/latest/skaffold-linux-amd64 >skaffold
+    - chmod +x skaffold
+    - mv skaffold /usr/local/bin/skaffold
+    # Install ghr
+    - curl -L https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz | tar -zvxf - ghr_v0.13.0_linux_amd64/ghr
+    - chmod +x ghr_v0.13.0_linux_amd64/ghr
+    - mv ghr_v0.13.0_linux_amd64/ghr /usr/local/bin/ghr
+    # Install Chart Releaser
+    - curl -L https://github.com/helm/chart-releaser/releases/download/v0.2.3/chart-releaser_0.2.3_linux_amd64.tar.gz | tar -zvxf - cr
+    - chmod +x cr
+    - mv cr /usr/local/bin/cr
+    # Install dibs
+    - curl -Lo dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
+    - chmod +x dibs
+    - mv dibs /usr/local/bin/dibs
+    # Login to Docker Hub
+    - docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+
+stages:
+  - unitTest
+  - integrationTest
+  - buildAndPushImage
+  - buildAndPushManifestAndAssets
+  - buildAndPushChart
+
+unitTestLang:
+  <<: *dibsJob
+  stage: unitTest
+  script:
+    - dibs pipeline test unit lang -e docker
+
+integrationTestLang:
+  <<: *dibsJob
+  stage: integrationTest
+  script:
+    - dibs pipeline test integration lang -e docker
+
+integrationTestImage:
+  <<: *dibsJob
+  stage: integrationTest
+  script:
+    - dibs pipeline build image
+    - dibs pipeline test integration image -e docker
+
+integrationTestAssets:
+  <<: *dibsJob
+  stage: integrationTest
+  script:
+    - dibs pipeline test integration assets -e docker
+
+integrationTestChart:
+  <<: *dibsJob
+  stage: integrationTest
+  script:
+    - dibs pipeline test integration chart -e docker
+
+buildAndPushImage:
+  <<: *dibsJob
+  stage: buildAndPushImage
+  script:
+    - dibs pipeline build image
+    - dibs pipeline push image
+  only:
+    - tags
+
+buildAndPushManifest:
+  <<: *dibsJob
+  stage: buildAndPushManifestAndAssets
+  script:
+    - dibs pipeline build manifest
+    - dibs pipeline push manifest
+  only:
+    - tags
+
+buildAndPushAssets:
+  <<: *dibsJob
+  stage: buildAndPushManifestAndAssets
+  script:
+    - dibs pipeline build assets -e docker
+    - dibs pipeline push assets
+  artifacts:
+    name: prebuiltBinaries
+    paths:
+      - .bin
+    expire_in: 1 month
+  only:
+    - tags
+
+buildAndPushChart:
+  <<: *dibsJob
+  stage: buildAndPushChart
+  script:
+    - dibs pipeline build chart
+    - dibs pipeline push chart
+  artifacts:
+    name: helmChart
+    paths:
+      - .bin/chart
+    expire_in: 1 month
+  only:
+    - tags
