@@ -7,6 +7,7 @@ require (
 	github.com/golang/protobuf v1.3.3
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible
+	github.com/minio/minio-go/v6 v6.0.49
 	github.com/nwaples/rardecode v1.1.0 // indirect
 	github.com/otiai10/copy v1.0.2
 	github.com/pierrec/lz4 v2.4.1+incompatible // indirect
