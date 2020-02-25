@@ -3,3 +3,6 @@ dependencies:
     version: 0.0.9
     repository: https://pojntfx.github.io/charts/
     condition: meta.dev
+  - name: minio
+    version: 3.0.7
+    repository: https://charts.bitnami.com/bitnami

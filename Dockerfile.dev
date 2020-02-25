@@ -23,6 +23,8 @@ COPY ./cmd ./cmd
 COPY ./pkg ./pkg
 COPY ./.git ./.git
 
+RUN dibs pipeline build assets
+
 EXPOSE 1440
 
 CMD dibs pipeline sync client

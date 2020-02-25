@@ -11,3 +11,13 @@ ingress:
   nodePort: 31440
   domain: ipxebuilderd.felicitas.pojtinger.com
   path: /
+
+minio:
+  ingress:
+    enabled: true
+    hosts:
+      - name: minio.ipxebuilderd.felicitas.pojtinger.com
+    accessKey:
+      password: ipxebuilderUser
+    secretKey:
+      password: ipxebuilderdPass
