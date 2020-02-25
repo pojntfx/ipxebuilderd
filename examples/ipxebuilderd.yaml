@@ -1,2 +1,5 @@
 ipxebuilderd:
   listenHostPort: localhost:1440
+  s3HostPort: minio.ipxebuilderd.felicitas.pojtinger.com
+  s3AccessKey: ipxebuilderUser
+  s3SecretKey: ipxebuilderdPass

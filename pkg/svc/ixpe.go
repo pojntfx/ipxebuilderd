@@ -7,6 +7,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/minio/minio-go/v6"
 	iPXEBuilder "github.com/pojntfx/ipxebuilderd/pkg/proto/generated"
 	"github.com/pojntfx/ipxebuilderd/pkg/workers"
 	"gitlab.com/bloom42/libs/rz-go/log"
@@ -19,12 +20,22 @@ const (
 // IPXEBuilder manages iPXEs.
 type IPXEBuilder struct {
 	iPXEBuilder.UnimplementedIPXEBuilderServer
-	Builder *workers.Builder
+	Builder  *workers.Builder
+	S3Client *minio.Client
 }
 
 // Extract extracts the iPXE source code.
 func (i *IPXEBuilder) Extract() error {
 	return i.Builder.Extract()
+}
+
+// ConnectToS3 connects to S3.
+func (i *IPXEBuilder) ConnectToS3(S3HostPort, S3AccessKey, S3SecretKey string) error {
+	minioClient, err := minio.New(S3HostPort, S3AccessKey, S3SecretKey, false)
+
+	i.S3Client = minioClient
+
+	return err
 }
 
 // Create creates an iPXE.
