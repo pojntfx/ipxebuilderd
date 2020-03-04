@@ -1,0 +1,41 @@
+# syntax=docker/dockerfile:experimental
+# Build container
+FROM --platform=$TARGETPLATFORM golang AS build
+ARG TARGET
+ARG TARGETPLATFORM
+
+WORKDIR /app
+
+RUN apt update
+RUN apt install -y protobuf-compiler
+
+RUN curl -Lo /tmp/dibs https://nx904.your-storageshare.de/s/ZWxkmmQW37fHt9J/download
+RUN install /tmp/dibs /usr/local/bin
+
+ENV GO111MODULE=on
+
+RUN go get github.com/golang/protobuf/protoc-gen-go
+RUN go get github.com/rakyll/statik
+RUN go get github.com/mholt/archiver/cmd/arc
+
+ADD . .
+
+RUN dibs -generateSources
+RUN dibs -build
+
+# Run container
+FROM --platform=$TARGETPLATFORM golang
+ARG TARGET
+ARG TARGETPLATFORM
+
+WORKDIR /app
+
+RUN apt update
+RUN apt install -y gcc make git liblzma-dev
+
+RUN curl -Lo /tmp/dibs https://nx904.your-storageshare.de/s/ZWxkmmQW37fHt9J/download
+RUN install /tmp/dibs /usr/local/bin
+
+COPY --from=build /app /app
+
+CMD dibs -integrationTests
