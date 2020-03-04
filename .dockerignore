@@ -1,5 +1,5 @@
-**/vendor
-**/statik
-**/__debug_bin*
-**/.bin
-**/charts/*/charts
+.bin
+.idea
+charts/*/charts
+vendor
+statik

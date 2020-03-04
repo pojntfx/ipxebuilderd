@@ -7,9 +7,9 @@ package utils
 //go:generate statik -src vendor/ipxe/dist
 
 import (
+	"github.com/mholt/archiver/v3"
 	"os"
 
-	"github.com/mholt/archiver"
 	"github.com/rakyll/statik/fs"
 
 	_ "github.com/pojntfx/ipxebuilderd/pkg/utils/statik" // The embedded assets.
