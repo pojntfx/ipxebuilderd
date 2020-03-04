@@ -1,9 +1,6 @@
 dependencies:
-- name: dibs
-  repository: https://pojntfx.github.io/charts/
-  version: 0.0.9
 - name: minio
   repository: https://charts.bitnami.com/bitnami
   version: 3.0.7
-digest: sha256:edc653ef85b81a86500b2e46eb198cb083cd890d4da7051e83bf4f677132b143
-generated: "2020-02-25T08:33:02.092448+01:00"
+digest: sha256:68ed36088a81251b33341dda5a2bc917a7c43d54e4024a5d804ab8edad769e38
+generated: "2020-03-04T20:00:16.433675+01:00"
