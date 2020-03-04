@@ -8,7 +8,7 @@ WORKDIR /app
 RUN apt update
 RUN apt install -y protobuf-compiler gcc make git liblzma-dev
 
-RUN curl -Lo /tmp/dibs https://nx904.your-storageshare.de/s/ZWxkmmQW37fHt9J/download
+RUN curl -Lo /tmp/dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
 RUN install /tmp/dibs /usr/local/bin
 
 ENV GO111MODULE=on
