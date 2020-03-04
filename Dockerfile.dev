@@ -19,4 +19,8 @@ RUN go get github.com/mholt/archiver/cmd/arc
 
 ADD . .
 
-CMD dibs -dev
+RUN dibs -generateSources
+# Tests are disabled because there currently are none.
+# To reduce build time, automatic sources generation has also been disabled. To generate sources manually, just save
+# any file not synced by Skaffold (like a `.proto` file) and the command above will be re-run.
+CMD dibs -dev -skipGenerateSources -skipTests
