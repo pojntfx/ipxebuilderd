@@ -1,0 +1,168 @@
+.dibsJob: &dibsJob
+  image: docker:stable
+  services:
+    - name: docker:dind
+      command:
+        - "--experimental"
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+  before_script:
+    # Install curl and tar
+    - apk add -u curl tar
+    # Install qemu-user-static
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # Install buildx
+    - curl -Lo /tmp/docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
+    - mkdir -p ~/.docker/cli-plugins/
+    - install /tmp/docker-buildx ~/.docker/cli-plugins
+    - docker buildx create --name dibs
+    - docker buildx use dibs
+    - docker buildx inspect --bootstrap
+    # Install Helm
+    - curl -L https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz | tar -zvxf - linux-amd64/helm -O >/tmp/helm
+    - install /tmp/helm /usr/local/bin
+    - helm init --client-only
+    # Install ghr
+    - curl -L https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz | tar -zvxf - ghr_v0.13.0_linux_amd64/ghr
+    - install ghr_v0.13.0_linux_amd64/ghr /usr/local/bin
+    # Install Chart Releaser
+    - curl -L https://github.com/helm/chart-releaser/releases/download/v0.2.3/chart-releaser_0.2.3_linux_amd64.tar.gz | tar -zvxf - cr
+    - install cr /usr/local/bin
+    # Install dibs
+    - curl -Lo /tmp/dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
+    - install /tmp/dibs /usr/local/bin
+    # Login to Docker Hub
+    - docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+
+stages:
+  - ipxebuilderd:unitTest
+  - ipxebuilderd:integrationTest
+  - ipxebuilderd:buildAndPushImage
+  - ipxebuilderd:buildAndPushManifestAndBinaries
+  - ipxebuilderd:buildAndPushChart
+
+# Unit tests
+ipxebuilderd:unitTestAMD64:
+  <<: *dibsJob
+  stage: ipxebuilderd:unitTest
+  script:
+    - dibs -unitTests -target linux -platform linux/amd64 -docker
+ipxebuilderd:unitTestARM64:
+  <<: *dibsJob
+  stage: ipxebuilderd:unitTest
+  script:
+    - dibs -unitTests -target linux -platform linux/arm64 -docker
+
+# Integration tests
+ipxebuilderd:integrationTestAMD64:
+  <<: *dibsJob
+  stage: ipxebuilderd:integrationTest
+  script:
+    - dibs -integrationTests -target linux -platform linux/amd64 -docker
+ipxebuilderd:integrationTestARM64:
+  <<: *dibsJob
+  stage: ipxebuilderd:integrationTest
+  script:
+    - dibs -integrationTests -target linux -platform linux/arm64 -docker
+
+# Image tests
+# amd64 is disabled for now due to a GitLab bug where it does not exit after being run
+#ipxebuilderd:imageTestsAMD64:
+#  <<: *dibsJob
+#  stage: ipxebuilderd:integrationTest
+#  script:
+#    - dibs -buildImage -target linux -platform linux/amd64
+#    - dibs -imageTests -target linux -platform linux/amd64
+ipxebuilderd:imageTestsARM64:
+  <<: *dibsJob
+  stage: ipxebuilderd:integrationTest
+  script:
+    - dibs -buildImage -target linux -platform linux/arm64
+    - dibs -imageTests -target linux -platform linux/arm64
+
+# Chart tests
+ipxebuilderd:chartTestsAMD64:
+  <<: *dibsJob
+  stage: ipxebuilderd:integrationTest
+  script:
+    - dibs -buildImage -target linux -platform linux/amd64
+    - dibs -buildManifest -target linux
+    - dibs -chartTests -target linux -platform linux/amd64 -docker
+ipxebuilderd:chartTestsARM64:
+  <<: *dibsJob
+  stage: ipxebuilderd:integrationTest
+  script:
+    - dibs -buildImage -target linux -platform linux/arm64
+    - dibs -buildManifest -target linux
+    - dibs -chartTests -target linux -platform linux/arm64 -docker
+
+# Build and push image
+ipxebuilderd:buildAndPushImageAMD64:
+  <<: *dibsJob
+  stage: ipxebuilderd:buildAndPushImage
+  script:
+    - dibs -buildImage -target linux -platform linux/amd64
+    - dibs -pushImage -target linux -platform linux/amd64
+  only:
+    - tags
+ipxebuilderd:buildAndPushImageARM64:
+  <<: *dibsJob
+  stage: ipxebuilderd:buildAndPushImage
+  script:
+    - dibs -buildImage -target linux -platform linux/arm64
+    - dibs -pushImage -target linux -platform linux/arm64
+  only:
+    - tags
+
+# Build and push manifest
+ipxebuilderd:buildAndPushManifest:
+  <<: *dibsJob
+  stage: ipxebuilderd:buildAndPushManifestAndBinaries
+  script:
+    - dibs -buildManifest -target linux
+    - dibs -pushManifest -target linux
+  only:
+    - tags
+
+# Build and push binaries
+ipxebuilderd:buildAndPushBinariesAMD64:
+  <<: *dibsJob
+  stage: ipxebuilderd:buildAndPushManifestAndBinaries
+  script:
+    - dibs -build -target linux -platform linux/amd64 -docker
+    - dibs -pushBinary -target linux -platform linux/amd64
+  artifacts:
+    name: ipxebuilderd-binaries-amd64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+ipxebuilderd:buildAndPushBinariesARM64:
+  <<: *dibsJob
+  stage: ipxebuilderd:buildAndPushManifestAndBinaries
+  script:
+    - dibs -build -target linux -platform linux/arm64 -docker
+    - dibs -pushBinary -target linux -platform linux/arm64
+  artifacts:
+    name: ipxebuilderd-binaries-arm64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+
+# Build and push chart
+ipxebuilderd:buildAndPushChart:
+  <<: *dibsJob
+  stage: ipxebuilderd:buildAndPushChart
+  script:
+    - dibs -buildChart -target linux
+    - dibs -pushChart -target linux
+  artifacts:
+    name: ipxebuilderd-chart
+    paths:
+      - .bin/chart
+    expire_in: 1 month
+  only:
+    - tags
