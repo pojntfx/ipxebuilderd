@@ -8,7 +8,7 @@ targets:
       - identifier: linux/amd64
         paths:
           watch: .
-          include: (.*).go
+          include: (.*)\.go
           assetInImage: /usr/local/bin/ipxebuilderd
           assetOut: .bin/binaries/ipxebuilderd-linux-amd64
           gitRepoRoot: .
@@ -40,7 +40,7 @@ targets:
       - identifier: linux/arm64
         paths:
           watch: .
-          include: (.*).go
+          include: (.*)\.go
           assetInImage: /usr/local/bin/ipxebuilderd
           assetOut: .bin/binaries/ipxebuilderd-linux-arm64
           gitRepoRoot: .
