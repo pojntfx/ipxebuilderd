@@ -1,35 +1,36 @@
-{{ if .Values.meta.dev }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ipxebuilder{{ if .Values.meta.dev }}-dev{{ end }}
+  name: ipxebuilder-{{ .Release.Name }}{{ if .Values.meta.dev }}-dev{{ end }}
 data:
   TARGET: {{ .Values.meta.target }}
   TARGETPLATFORM: {{ .Values.meta.platform }}
----
-  {{ end }}
+  IPXEBUILDERD_PXEBUILDERD_S3HOSTPORTPUBLIC: {{ if .Values.meta.dev }}{{ .Release.Name }}-minio:9000{{ else }}{{ (index .Values.minio.ingress.hosts 0).name }}{{ end }}
+  IPXEBUILDERD_PXEBUILDERD_S3HOSTPORT: {{ .Release.Name }}-minio:9000
+  IPXEBUILDERD_PXEBUILDERD_S3ACCESSKEY: {{ .Values.minio.accessKey.password }}
+  IPXEBUILDERD_PXEBUILDERD_S3SECRETKEY: {{ .Values.minio.secretKey.password }}
+  IPXEBUILDERD_PXEBUILDERD_S3BUCKET: {{ .Values.S3.bucket }}
 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ipxebuilderd{{ if .Values.meta.dev }}-dev{{ end }}
+  name: ipxebuilderd-{{ .Release.Name }}{{ if .Values.meta.dev }}-dev{{ end }}
 spec:
   selector:
     matchLabels:
-      app: ipxebuilderd{{ if .Values.meta.dev }}-dev{{ end }}
+      app: ipxebuilderd-{{ .Release.Name }}{{ if .Values.meta.dev }}-dev{{ end }}
   template:
     metadata:
       labels:
-        app: ipxebuilderd{{ if .Values.meta.dev }}-dev{{ end }}
+        app: ipxebuilderd-{{ .Release.Name }}{{ if .Values.meta.dev }}-dev{{ end }}
     spec:
       containers:
         - name: ipxebuilderd{{ if .Values.meta.dev }}-dev{{ end }}
           image: {{ .Values.meta.image }}
-          {{ if .Values.meta.dev }}
           envFrom:
             - configMapRef:
-                name: ipxebuilder{{ if .Values.meta.dev }}-dev{{ end }}
-          {{ end }}
+                name: ipxebuilder-{{ .Release.Name }}{{ if .Values.meta.dev }}-dev{{ end }}
           {{ if not .Values.meta.dev }}
           resources:
             limits:
@@ -44,10 +45,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ipxebuilderd-dev
+  name: ipxebuilderd-{{ .Release.Name }}-dev
 spec:
   selector:
-    app: ipxebuilderd-dev
+    app: ipxebuilderd-{{ .Release.Name }}-dev
   type: NodePort
   ports:
     - name: grpc
@@ -60,16 +61,16 @@ spec:
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: ipxebuilderd
+  name: ipxebuilderd-{{ .Release.Name }}
 spec:
   selector:
-    app: ipxebuilderd
+    app: ipxebuilderd-{{ .Release.Name }}
   maxReplicas: {{ .Values.resources.maxReplicas }}
   minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: ipxebuilderd
+    name: ipxebuilderd-{{ .Release.Name }}
   metrics:
     - type: Resource
       resource:
@@ -80,10 +81,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ipxebuilderd
+  name: ipxebuilderd-{{ .Release.Name }}
 spec:
   selector:
-    app: ipxebuilderd
+    app: ipxebuilderd-{{ .Release.Name }}
   ports:
     - name: grpc
       port: 1440
@@ -93,7 +94,7 @@ spec:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: ipxebuilderd
+  name: ipxebuilderd-{{ .Release.Name }}
   annotations:
     ingress.kubernetes.io/protocol: h2c
 spec:
@@ -103,6 +104,6 @@ spec:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
-              serviceName: ipxebuilderd
+              serviceName: ipxebuilderd-{{ .Release.Name }}
               servicePort: grpc
   {{ end }}

@@ -30,12 +30,23 @@ func (i *IPXEBuilder) Extract() error {
 }
 
 // ConnectToS3 connects to S3.
-func (i *IPXEBuilder) ConnectToS3(S3HostPort, S3AccessKey, S3SecretKey string) error {
-	minioClient, err := minio.New(S3HostPort, S3AccessKey, S3SecretKey, false)
+func (i *IPXEBuilder) ConnectToS3(s3HostPort, s3AccessKey, s3SecretKey, s3bucketName string) error {
+	minioClient, err := minio.New(s3HostPort, s3AccessKey, s3SecretKey, false)
+
+	if err := minioClient.MakeBucket(s3bucketName, "us-east-1"); err != nil {
+		exists, err := minioClient.BucketExists(s3bucketName)
+		if err != nil && !exists {
+			return err
+		}
+	}
 
 	i.S3Client = minioClient
 
 	return err
+}
+
+func (i *IPXEBuilder) upload(path string) error {
+	return nil
 }
 
 // Create creates an iPXE.

@@ -12,6 +12,9 @@ ingress:
   domain: ipxebuilderd.felix.pojtinger.com
   path: /
 
+S3:
+  bucket: ipxebuilderd
+
 minio:
   ingress:
     enabled: true
