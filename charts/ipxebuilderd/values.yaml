@@ -1,6 +1,9 @@
 meta:
   image: pojntfx/ipxebuilderd:latest
   dev: false
+  debug: true
+  debugPort: 31441
+  debugNodePort: 31441
 
 resources:
   memory: "128Mi"

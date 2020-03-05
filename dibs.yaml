@@ -19,7 +19,15 @@ targets:
           integrationTests: .bin/binaries/ipxebuilderd-linux-amd64 --help
           imageTests: docker run --platform linux/amd64 -e TARGET=linux -e TARGETPLATFORM=linux/amd64 pojntfx/ipxebuilderd:linux-amd64 /usr/local/bin/ipxebuilderd --help
           chartTests: helm install --name ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete --purge ipxebuilderd
-          start: .bin/binaries/ipxebuilderd-linux-amd64
+          start: |
+            if [ "$DEBUG" = "true" ]; then
+              pkill -9 dlv || true
+              pkill -9 ipxebuilderd || true
+              .bin/binaries/ipxebuilderd-linux-amd64 &
+              dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
+            else
+              .bin/binaries/ipxebuilderd-linux-amd64
+            fi
         docker:
           build:
             file: Dockerfile
@@ -51,7 +59,15 @@ targets:
           integrationTests: .bin/binaries/ipxebuilderd-linux-arm64 --help
           imageTests: docker run --platform linux/arm64 -e TARGET=linux -e TARGETPLATFORM=linux/arm64 pojntfx/ipxebuilderd:linux-arm64 /usr/local/bin/ipxebuilderd --help
           chartTests: helm install --name ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete --purge ipxebuilderd
-          start: .bin/binaries/ipxebuilderd-linux-arm64
+          start: |
+            if [ "$DEBUG" = "true" ]; then
+              pkill -9 dlv || true
+              pkill -9 ipxebuilderd || true
+              .bin/binaries/ipxebuilderd-linux-arm64 &
+              dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
+            else
+              .bin/binaries/ipxebuilderd-linux-arm64
+            fi
         docker:
           build:
             file: Dockerfile
