@@ -17,7 +17,7 @@ minio:
     enabled: true
     hosts:
       - name: minio.ipxebuilderd.felicitas.pojtinger.com
-    accessKey:
-      password: ipxebuilderUser
-    secretKey:
-      password: ipxebuilderdPass
+  accessKey:
+    password: ipxebuilderUser
+  secretKey:
+    password: ipxebuilderUser
