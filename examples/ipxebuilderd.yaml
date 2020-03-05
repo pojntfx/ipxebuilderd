@@ -3,3 +3,4 @@ ipxebuilderd:
   s3HostPort: minio.ipxebuilderd.felicitas.pojtinger.com
   s3AccessKey: ipxebuilderUser
   s3SecretKey: ipxebuilderdPass
+  s3Bucket: ipxebuilderd

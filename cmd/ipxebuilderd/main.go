@@ -22,13 +22,15 @@ import (
 )
 
 const (
-	keyPrefix         = "ipxebuilderd."
-	configFileDefault = ""
-	configFileKey     = keyPrefix + "configFile"
-	listenHostPortKey = keyPrefix + "listenHostPort"
-	s3HostPortKey     = keyPrefix + "s3HostPort"
-	s3AccessKeyKey    = keyPrefix + "s3AccessKey"
-	s3SecretKeyKey    = keyPrefix + "s3SecretKey"
+	keyPrefix           = "ipxebuilderd."
+	configFileDefault   = ""
+	configFileKey       = keyPrefix + "configFile"
+	listenHostPortKey   = keyPrefix + "listenHostPort"
+	s3HostPortKey       = keyPrefix + "s3HostPort"
+	s3HostPortPublicKey = keyPrefix + "s3HostPortPublic"
+	s3AccessKeyKey      = keyPrefix + "s3AccessKey"
+	s3SecretKeyKey      = keyPrefix + "s3SecretKey"
+	s3BucketKey         = keyPrefix + "s3Bucket"
 )
 
 var rootCmd = &cobra.Command{
@@ -66,9 +68,9 @@ https://pojntfx.github.io/ipxebuilderd/`,
 			Builder: &builder,
 		}
 
-		if err := iPXEService.ConnectToS3(viper.GetString(s3HostPortKey), viper.GetString(s3AccessKeyKey), viper.GetString(s3SecretKeyKey)); err != nil {
-			return err
-		}
+		//if err := iPXEService.ConnectToS3(viper.GetString(s3HostPortKey), viper.GetString(s3AccessKeyKey), viper.GetString(s3SecretKeyKey), viper.GetString(s3BucketKey)); err != nil {
+		//	return err
+		//}
 
 		iPXEBuilder.RegisterIPXEBuilderServer(server, &iPXEService)
 
@@ -105,18 +107,22 @@ https://pojntfx.github.io/ipxebuilderd/`,
 
 func init() {
 	var (
-		configFileFlag  string
-		hostPortFlag    string
-		s3HostPortFlag  string
-		s3AccessKeyFlag string
-		s3SecretKeyFlag string
+		configFileFlag       string
+		hostPortFlag         string
+		s3HostPortFlag       string
+		s3HostPortPublicFlag string
+		s3AccessKeyFlag      string
+		s3SecretKeyFlag      string
+		s3BucketFlag         string
 	)
 
 	rootCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, constants.ConfigurationFileDocs)
 	rootCmd.PersistentFlags().StringVarP(&hostPortFlag, listenHostPortKey, "l", constants.IPXEBuilderDHostPortDefault, "TCP listen host:port.")
 	rootCmd.PersistentFlags().StringVarP(&s3HostPortFlag, s3HostPortKey, "s", "minio.ipxebuilderd.felicitas.pojtinger.com", "Host:port of the S3 server to connect to.")
+	rootCmd.PersistentFlags().StringVarP(&s3HostPortPublicFlag, s3HostPortPublicKey, "o", "minio.ipxebuilderd.felicitas.pojtinger.com", "Public host:port of the S3 server (will be used in shared links).")
 	rootCmd.PersistentFlags().StringVarP(&s3AccessKeyFlag, s3AccessKeyKey, "u", "ipxebuilderUser", "Access key of the S3 server to connect to.")
 	rootCmd.PersistentFlags().StringVarP(&s3SecretKeyFlag, s3SecretKeyKey, "p", "ipxebuilderdPass", "Secret key of the S3 server to connect to.")
+	rootCmd.PersistentFlags().StringVarP(&s3BucketFlag, s3BucketKey, "b", "ipxebuilderd", "S3 bucket to use.")
 
 	if err := viper.BindPFlags(rootCmd.PersistentFlags()); err != nil {
 		log.Fatal(constants.CouldNotBindFlagsErrorMessage, rz.Err(err))
