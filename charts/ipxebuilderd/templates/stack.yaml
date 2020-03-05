@@ -10,6 +10,9 @@ data:
   IPXEBUILDERD_PXEBUILDERD_S3ACCESSKEY: {{ .Values.minio.accessKey.password }}
   IPXEBUILDERD_PXEBUILDERD_S3SECRETKEY: {{ .Values.minio.secretKey.password }}
   IPXEBUILDERD_PXEBUILDERD_S3BUCKET: {{ .Values.S3.bucket }}
+  {{ if and .Values.meta.dev .Values.meta.debug }}
+  DEBUG: "true"
+  {{end}}
 
 ---
 apiVersion: apps/v1
@@ -39,6 +42,9 @@ spec:
           {{ end }}
           ports:
             - containerPort: 1440
+            {{ if and .Values.meta.dev .Values.meta.debug }}
+            - containerPort: {{ .Values.meta.debugPort }}
+            {{end}}
   {{ if .Values.meta.dev }}
 
 ---
@@ -55,6 +61,10 @@ spec:
       port: 31440
       targetPort: 1440
       nodePort: {{ .Values.ingress.nodePort }}
+    - name: debug
+      port: {{ .Values.meta.debugNodePort }}
+      targetPort: {{ .Values.meta.debugPort }}
+      nodePort: {{ .Values.meta.debugNodePort }}
   {{ else }}
 
 ---

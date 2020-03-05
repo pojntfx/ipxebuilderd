@@ -43,3 +43,4 @@ profiles:
             setValueTemplates:
               meta.target: "{{ .TARGET }}"
               meta.platform: "{{ .TARGETPLATFORM }}"
+              meta.debug: "{{ .DEBUG }}"

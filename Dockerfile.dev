@@ -16,6 +16,7 @@ ENV GO111MODULE=on
 RUN go get github.com/golang/protobuf/protoc-gen-go
 RUN go get github.com/rakyll/statik
 RUN go get github.com/mholt/archiver/cmd/arc
+RUN go get github.com/go-delve/delve/cmd/dlv
 
 ADD . .
 
