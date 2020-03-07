@@ -28,7 +28,7 @@ profiles:
             dockerfile: Dockerfile.dev
           sync:
             infer:
-              - "**/*.go"
+              - "**/*" # Re-deploy manually to apply k8s changes
       local:
         useBuildkit: true
     deploy:

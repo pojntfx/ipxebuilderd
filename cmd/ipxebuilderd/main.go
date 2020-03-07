@@ -1,6 +1,13 @@
 package main
 
 import (
+	"net"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"strings"
+	"syscall"
+
 	constants "github.com/pojntfx/ipxebuilderd/cmd"
 	iPXEBuilder "github.com/pojntfx/ipxebuilderd/pkg/proto/generated"
 	"github.com/pojntfx/ipxebuilderd/pkg/svc"
@@ -12,12 +19,6 @@ import (
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
-	"os"
-	"os/signal"
-	"path/filepath"
-	"strings"
-	"syscall"
 )
 
 const (
@@ -67,9 +68,9 @@ https://pojntfx.github.io/ipxebuilderd/`,
 			Builder: &builder,
 		}
 
-		//if err := iPXEService.ConnectToS3(viper.GetString(s3HostPortKey), viper.GetString(s3AccessKeyKey), viper.GetString(s3SecretKeyKey), viper.GetString(s3BucketKey)); err != nil {
-		//	return err
-		//}
+		if err := iPXEService.ConnectToS3(viper.GetString(s3HostPortKey), viper.GetString(s3AccessKeyKey), viper.GetString(s3SecretKeyKey), viper.GetString(s3BucketKey)); err != nil {
+			return err
+		}
 
 		iPXEBuilder.RegisterIPXEBuilderServer(server, &iPXEService)
 
