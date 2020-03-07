@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:experimental
 # Build container
 FROM --platform=$TARGETPLATFORM golang AS build
-ARG TARGET
+ARG DIBS_TARGET
 ARG TARGETPLATFORM
 
 WORKDIR /app
@@ -25,7 +25,7 @@ RUN dibs -build
 
 # Run container
 FROM --platform=$TARGETPLATFORM debian
-ARG TARGET
+ARG DIBS_TARGET
 ARG TARGETPLATFORM
 
 RUN apt update

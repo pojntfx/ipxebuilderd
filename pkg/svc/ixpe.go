@@ -81,6 +81,8 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 				return err
 			}
 		case outPath := <-doneChan:
+			// TODO: Upload to S3, share and send the link here
+
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
 				Delta: 0,
 				Path:  outPath,

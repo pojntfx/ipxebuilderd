@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: ipxebuilder-{{ .Release.Name }}{{ if .Values.meta.dev }}-dev{{ end }}
 data:
-  TARGET: "{{ .Values.meta.target }}"
+  DIBS_TARGET: "{{ .Values.meta.target }}"
   TARGETPLATFORM: "{{ .Values.meta.platform }}"
   IPXEBUILDERD_IPXEBUILDERD_S3HOSTPORTPUBLIC: {{ if .Values.meta.dev }}{{ .Release.Name }}-minio:9000{{ else }}{{ (index .Values.minio.ingress.hosts 0).name }}{{ end }}
   IPXEBUILDERD_IPXEBUILDERD_S3HOSTPORT: {{ .Release.Name }}-minio:9000
@@ -11,7 +11,7 @@ data:
   IPXEBUILDERD_IPXEBUILDERD_S3SECRETKEY: {{ .Values.minio.secretKey.password }}
   IPXEBUILDERD_IPXEBUILDERD_S3BUCKET: {{ .Values.S3.bucket }}
   {{ if and .Values.meta.dev .Values.meta.debug }}
-  DEBUG: "true"
+  DIBS_DEBUG: "true"
   {{end}}
 
 ---

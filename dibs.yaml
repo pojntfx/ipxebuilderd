@@ -17,10 +17,10 @@ targets:
           build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/ipxebuilderd-linux-amd64 cmd/ipxebuilderd/main.go
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/ipxebuilderd-linux-amd64 --help
-          imageTests: docker run --platform linux/amd64 -e TARGET=linux -e TARGETPLATFORM=linux/amd64 pojntfx/ipxebuilderd:linux-amd64 /usr/local/bin/ipxebuilderd --help
+          imageTests: docker run --platform linux/amd64 -e DIBS_TARGET=linux -e TARGETPLATFORM=linux/amd64 pojntfx/ipxebuilderd:linux-amd64 /usr/local/bin/ipxebuilderd --help
           chartTests: helm install ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete ipxebuilderd
           start: |
-            if [ "$DEBUG" = "true" ]; then
+            if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 ipxebuilderd || true
               .bin/binaries/ipxebuilderd-linux-amd64 &
@@ -57,10 +57,10 @@ targets:
           build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/ipxebuilderd-linux-arm64 cmd/ipxebuilderd/main.go
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/ipxebuilderd-linux-arm64 --help
-          imageTests: docker run --platform linux/arm64 -e TARGET=linux -e TARGETPLATFORM=linux/arm64 pojntfx/ipxebuilderd:linux-arm64 /usr/local/bin/ipxebuilderd --help
+          imageTests: docker run --platform linux/arm64 -e DIBS_TARGET=linux -e TARGETPLATFORM=linux/arm64 pojntfx/ipxebuilderd:linux-arm64 /usr/local/bin/ipxebuilderd --help
           chartTests: helm install ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete ipxebuilderd
           start: |
-            if [ "$DEBUG" = "true" ]; then
+            if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 ipxebuilderd || true
               .bin/binaries/ipxebuilderd-linux-arm64 &
