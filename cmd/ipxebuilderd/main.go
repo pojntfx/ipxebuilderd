@@ -31,6 +31,7 @@ const (
 	s3AccessKeyKey      = keyPrefix + "s3AccessKey"
 	s3SecretKeyKey      = keyPrefix + "s3SecretKey"
 	s3BucketKey         = keyPrefix + "s3Bucket"
+	s3SecureKey         = keyPrefix + "secure"
 )
 
 var rootCmd = &cobra.Command{
@@ -65,8 +66,10 @@ https://pojntfx.github.io/ipxebuilderd/`,
 		reflection.Register(server)
 
 		iPXEService := svc.IPXEBuilder{
-			Builder:      &builder,
-			S3BucketName: viper.GetString(s3BucketKey),
+			Builder:          &builder,
+			S3BucketName:     viper.GetString(s3BucketKey),
+			S3HostPortPublic: viper.GetString(s3HostPortPublicKey),
+			S3Secure:         viper.GetBool(s3SecureKey),
 		}
 
 		if err := iPXEService.ConnectToS3(viper.GetString(s3HostPortKey), viper.GetString(s3AccessKeyKey), viper.GetString(s3SecretKeyKey)); err != nil {
@@ -115,6 +118,7 @@ func init() {
 		s3AccessKeyFlag      string
 		s3SecretKeyFlag      string
 		s3BucketFlag         string
+		s3SecureFlag         bool
 	)
 
 	rootCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, constants.ConfigurationFileDocs)
@@ -124,6 +128,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&s3AccessKeyFlag, s3AccessKeyKey, "u", "ipxebuilderUser", "Access key of the S3 server to connect to.")
 	rootCmd.PersistentFlags().StringVarP(&s3SecretKeyFlag, s3SecretKeyKey, "p", "ipxebuilderdPass", "Secret key of the S3 server to connect to.")
 	rootCmd.PersistentFlags().StringVarP(&s3BucketFlag, s3BucketKey, "b", "ipxebuilderd", "S3 bucket to use.")
+	rootCmd.PersistentFlags().BoolVarP(&s3SecureFlag, s3SecureKey, "z", false, "Whether to use a secure connection to S3.")
 
 	if err := viper.BindPFlags(rootCmd.PersistentFlags()); err != nil {
 		log.Fatal(constants.CouldNotBindFlagsErrorMessage, rz.Err(err))

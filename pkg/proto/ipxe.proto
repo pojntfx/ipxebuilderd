@@ -16,5 +16,5 @@ message IPXE {
 
 message IPXEStatus {
   int64 Delta = 1;
-  string Path = 4;
+  string URL = 4;
 }

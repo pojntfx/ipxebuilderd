@@ -19,6 +19,7 @@ ingress:
 
 S3:
   bucket: ipxebuilderd
+  secure: false
 
 minio:
   ingress:
