@@ -18,7 +18,7 @@ targets:
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/ipxebuilderd-linux-amd64 --help
           imageTests: docker run --platform linux/amd64 -e TARGET=linux -e TARGETPLATFORM=linux/amd64 pojntfx/ipxebuilderd:linux-amd64 /usr/local/bin/ipxebuilderd --help
-          chartTests: helm install --name ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete --purge ipxebuilderd
+          chartTests: helm install ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete ipxebuilderd
           start: |
             if [ "$DEBUG" = "true" ]; then
               pkill -9 dlv || true
@@ -58,7 +58,7 @@ targets:
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/ipxebuilderd-linux-arm64 --help
           imageTests: docker run --platform linux/arm64 -e TARGET=linux -e TARGETPLATFORM=linux/arm64 pojntfx/ipxebuilderd:linux-arm64 /usr/local/bin/ipxebuilderd --help
-          chartTests: helm install --name ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete --purge ipxebuilderd
+          chartTests: helm install ipxebuilderd .bin/chart/ipxebuilderd-*.tgz && helm delete ipxebuilderd
           start: |
             if [ "$DEBUG" = "true" ]; then
               pkill -9 dlv || true
