@@ -5,6 +5,8 @@ package svc
 
 import (
 	"errors"
+	"net/url"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -16,15 +18,31 @@ import (
 )
 
 const (
-	totalCompileSteps = 2347
+	totalCompileSteps = 2247
 )
 
 // IPXEBuilder manages iPXEs.
 type IPXEBuilder struct {
 	iPXEBuilder.UnimplementedIPXEBuilderServer
-	Builder      *workers.Builder
-	S3BucketName string
-	s3Client     *minio.Client
+	Builder                        *workers.Builder
+	S3BucketName, S3HostPortPublic string
+	S3Secure                       bool
+	s3Client                       *minio.Client
+}
+
+func (i *IPXEBuilder) getURL(objectName string) (string, error) {
+	// TODO: Specify if minio is secure or not (this should also be set in the `Connect` func with the SSL param and be false by default)
+	u, err := url.Parse("http://")
+	if i.S3Secure {
+		u, err = url.Parse("https://")
+	}
+	if err != nil {
+		return "", err
+	}
+
+	u.Path = path.Join(u.Path, i.S3HostPortPublic, i.S3BucketName, objectName)
+
+	return u.String(), nil
 }
 
 // Extract extracts the iPXE source code.
@@ -34,13 +52,19 @@ func (i *IPXEBuilder) Extract() error {
 
 // ConnectToS3 connects to S3.
 func (i *IPXEBuilder) ConnectToS3(s3HostPort, s3AccessKey, s3SecretKey string) error {
-	minioClient, err := minio.New(s3HostPort, s3AccessKey, s3SecretKey, false)
+	policy := "{\"Version\": \"2012-10-17\",\"Statement\": [{\"Action\": [\"s3:GetObject\"],\"Effect\": \"Allow\",\"Principal\": {\"AWS\": [\"*\"]},\"Resource\": [\"arn:aws:s3:::" + i.S3BucketName + "/*\"],\"Sid\": \"\"}]}"
+
+	minioClient, err := minio.New(s3HostPort, s3AccessKey, s3SecretKey, i.S3Secure)
 
 	if err := minioClient.MakeBucket(i.S3BucketName, "us-east-1"); err != nil {
 		exists, err := minioClient.BucketExists(i.S3BucketName)
 		if err != nil && !exists {
 			return err
 		}
+	}
+
+	if err := minioClient.SetBucketPolicy(i.S3BucketName, policy); err != nil {
+		return err
 	}
 
 	i.s3Client = minioClient
@@ -67,7 +91,7 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 			delta--
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
 				Delta: delta,
-				Path:  "",
+				URL:   "",
 			}); err != nil {
 				return err
 			}
@@ -79,13 +103,13 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 			delta--
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
 				Delta: delta,
-				Path:  "",
+				URL:   "",
 			}); err != nil {
 				return err
 			}
 		case outPath := <-doneChan:
 			_, rawObjectName := filepath.Split(outPath)
-			objectName := rawObjectName + "-" + uuid.NewV4().String()
+			objectName := path.Join(uuid.NewV4().String(), rawObjectName)
 			contentType := "application/octet-stream"
 
 			_, err := i.s3Client.FPutObject(i.S3BucketName, objectName, outPath, minio.PutObjectOptions{ContentType: contentType})
@@ -93,10 +117,14 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 				return err
 			}
 
-			// TODO: Share publicly, forever, and return the link
+			url, err := i.getURL(objectName)
+			if err != nil {
+				return err
+			}
+
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
 				Delta: 0,
-				Path:  outPath,
+				URL:   url,
 			}); err != nil {
 				return err
 			}

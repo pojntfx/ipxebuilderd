@@ -5,11 +5,12 @@ metadata:
 data:
   DIBS_TARGET: "{{ .Values.meta.target }}"
   TARGETPLATFORM: "{{ .Values.meta.platform }}"
-  IPXEBUILDERD_IPXEBUILDERD_S3HOSTPORTPUBLIC: {{ if .Values.meta.dev }}{{ .Release.Name }}-minio:9000{{ else }}{{ (index .Values.minio.ingress.hosts 0).name }}{{ end }}
-  IPXEBUILDERD_IPXEBUILDERD_S3HOSTPORT: {{ .Release.Name }}-minio:9000
-  IPXEBUILDERD_IPXEBUILDERD_S3ACCESSKEY: {{ .Values.minio.accessKey.password }}
-  IPXEBUILDERD_IPXEBUILDERD_S3SECRETKEY: {{ .Values.minio.secretKey.password }}
-  IPXEBUILDERD_IPXEBUILDERD_S3BUCKET: {{ .Values.S3.bucket }}
+  IPXEBUILDERD_IPXEBUILDERD_S3HOSTPORTPUBLIC: "{{ if .Values.meta.dev }}{{ .Release.Name }}-minio:9000{{ else }}{{ (index .Values.minio.ingress.hosts 0).name }}{{ end }}"
+  IPXEBUILDERD_IPXEBUILDERD_S3HOSTPORT: "{{ .Release.Name }}-minio:9000"
+  IPXEBUILDERD_IPXEBUILDERD_S3ACCESSKEY: "{{ .Values.minio.accessKey.password }}"
+  IPXEBUILDERD_IPXEBUILDERD_S3SECRETKEY: "{{ .Values.minio.secretKey.password }}"
+  IPXEBUILDERD_IPXEBUILDERD_S3BUCKET: "{{ .Values.S3.bucket }}"
+  IPXEBUILDERD_IPXEBUILDERD_S3SECURE: "{{ .Values.S3.secure }}"
   {{ if and .Values.meta.dev .Values.meta.debug }}
   DIBS_DEBUG: "true"
   {{end}}
