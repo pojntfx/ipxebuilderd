@@ -65,10 +65,11 @@ https://pojntfx.github.io/ipxebuilderd/`,
 		reflection.Register(server)
 
 		iPXEService := svc.IPXEBuilder{
-			Builder: &builder,
+			Builder:      &builder,
+			S3BucketName: viper.GetString(s3BucketKey),
 		}
 
-		if err := iPXEService.ConnectToS3(viper.GetString(s3HostPortKey), viper.GetString(s3AccessKeyKey), viper.GetString(s3SecretKeyKey), viper.GetString(s3BucketKey)); err != nil {
+		if err := iPXEService.ConnectToS3(viper.GetString(s3HostPortKey), viper.GetString(s3AccessKeyKey), viper.GetString(s3SecretKeyKey)); err != nil {
 			return err
 		}
 
