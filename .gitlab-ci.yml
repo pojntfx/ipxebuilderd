@@ -19,9 +19,8 @@
     - docker buildx use dibs
     - docker buildx inspect --bootstrap
     # Install Helm
-    - curl -L https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz | tar -zvxf - linux-amd64/helm -O >/tmp/helm
+    - curl -L https://get.helm.sh/helm-v3.1.1-linux-amd64.tar.gz | tar -zvxf - linux-amd64/helm -O >/tmp/helm
     - install /tmp/helm /usr/local/bin
-    - helm init --client-only
     # Install ghr
     - curl -L https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz | tar -zvxf - ghr_v0.13.0_linux_amd64/ghr
     - install ghr_v0.13.0_linux_amd64/ghr /usr/local/bin
