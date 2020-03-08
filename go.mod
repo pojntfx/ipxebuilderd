@@ -12,6 +12,7 @@ require (
 	github.com/mholt/archiver/v3 v3.3.0
 	github.com/minio/minio-go/v6 v6.0.49
 	github.com/otiai10/copy v1.0.2
+	github.com/pojntfx/dibs v0.0.0-20200308232904-4036ea5d5fdc
 	github.com/pojntfx/gon2n v0.0.0-20200127160701-0a9ec9069a66
 	github.com/rakyll/statik v0.1.7
 	github.com/satori/go.uuid v1.2.0
