@@ -36,8 +36,8 @@ const (
 
 var rootCmd = &cobra.Command{
 	Use:   "ipxebuilderd",
-	Short: "ipxebuilderd is an iPXE build daemon",
-	Long: `ipxebuilderd is an iPXE build daemon.
+	Short: "ipxebuilderd is the iPXE build daemon",
+	Long: `ipxebuilderd is the iPXE build daemon.
 
 Find more information at:
 https://pojntfx.github.io/ipxebuilderd/`,
@@ -122,7 +122,7 @@ func init() {
 	)
 
 	rootCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, constants.ConfigurationFileDocs)
-	rootCmd.PersistentFlags().StringVarP(&hostPortFlag, listenHostPortKey, "l", constants.IPXEBuilderDHostPortDefault, "TCP listen host:port.")
+	rootCmd.PersistentFlags().StringVarP(&hostPortFlag, listenHostPortKey, "l", constants.IPXEBuilderdHostPortPortDefault, "TCP listen host:port.")
 	rootCmd.PersistentFlags().StringVarP(&s3HostPortFlag, s3HostPortKey, "s", "minio.ipxebuilderd.felix.pojtinger.com", "Host:port of the S3 server to connect to.")
 	rootCmd.PersistentFlags().StringVarP(&s3HostPortPublicFlag, s3HostPortPublicKey, "o", "minio.ipxebuilderd.felix.pojtinger.com", "Public host:port of the S3 server (will be used in shared links).")
 	rootCmd.PersistentFlags().StringVarP(&s3AccessKeyFlag, s3AccessKeyKey, "u", "ipxebuilderUser", "Access key of the S3 server to connect to.")

@@ -8,8 +8,8 @@ meta:
   debug: "{{ .DIBS_DEBUG }}"
 
 resources:
-  memory: "128Mi"
-  cpu: "512m"
+  memory: "1Gi"
+  cpu: "800m"
   maxReplicas: 10
 
 ingress:
