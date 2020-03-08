@@ -108,8 +108,9 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 				return err
 			}
 		case outPath := <-doneChan:
-			_, rawObjectName := filepath.Split(outPath)
-			objectName := path.Join(uuid.NewV4().String(), rawObjectName)
+			rest, rawObjectName := filepath.Split(outPath)
+			platform := filepath.Base(rest)
+			objectName := path.Join(uuid.NewV4().String(), platform, rawObjectName)
 			contentType := "application/octet-stream"
 
 			_, err := i.s3Client.FPutObject(i.S3BucketName, objectName, outPath, minio.PutObjectOptions{ContentType: contentType})
