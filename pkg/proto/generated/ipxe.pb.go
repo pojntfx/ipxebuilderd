@@ -87,9 +87,111 @@ func (m *IPXE) GetScript() string {
 	return ""
 }
 
+type IPXEOut struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	Platform             string   `protobuf:"bytes,2,opt,name=Platform,proto3" json:"Platform,omitempty"`
+	Driver               string   `protobuf:"bytes,3,opt,name=Driver,proto3" json:"Driver,omitempty"`
+	Extension            string   `protobuf:"bytes,4,opt,name=Extension,proto3" json:"Extension,omitempty"`
+	URL                  string   `protobuf:"bytes,5,opt,name=URL,proto3" json:"URL,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *IPXEOut) Reset()         { *m = IPXEOut{} }
+func (m *IPXEOut) String() string { return proto.CompactTextString(m) }
+func (*IPXEOut) ProtoMessage()    {}
+func (*IPXEOut) Descriptor() ([]byte, []int) {
+	return fileDescriptor_74c3654a0f30563d, []int{1}
+}
+
+func (m *IPXEOut) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_IPXEOut.Unmarshal(m, b)
+}
+func (m *IPXEOut) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_IPXEOut.Marshal(b, m, deterministic)
+}
+func (m *IPXEOut) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IPXEOut.Merge(m, src)
+}
+func (m *IPXEOut) XXX_Size() int {
+	return xxx_messageInfo_IPXEOut.Size(m)
+}
+func (m *IPXEOut) XXX_DiscardUnknown() {
+	xxx_messageInfo_IPXEOut.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IPXEOut proto.InternalMessageInfo
+
+func (m *IPXEOut) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *IPXEOut) GetPlatform() string {
+	if m != nil {
+		return m.Platform
+	}
+	return ""
+}
+
+func (m *IPXEOut) GetDriver() string {
+	if m != nil {
+		return m.Driver
+	}
+	return ""
+}
+
+func (m *IPXEOut) GetExtension() string {
+	if m != nil {
+		return m.Extension
+	}
+	return ""
+}
+
+func (m *IPXEOut) GetURL() string {
+	if m != nil {
+		return m.URL
+	}
+	return ""
+}
+
+type IPXEBuilderListArgs struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *IPXEBuilderListArgs) Reset()         { *m = IPXEBuilderListArgs{} }
+func (m *IPXEBuilderListArgs) String() string { return proto.CompactTextString(m) }
+func (*IPXEBuilderListArgs) ProtoMessage()    {}
+func (*IPXEBuilderListArgs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_74c3654a0f30563d, []int{2}
+}
+
+func (m *IPXEBuilderListArgs) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_IPXEBuilderListArgs.Unmarshal(m, b)
+}
+func (m *IPXEBuilderListArgs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_IPXEBuilderListArgs.Marshal(b, m, deterministic)
+}
+func (m *IPXEBuilderListArgs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IPXEBuilderListArgs.Merge(m, src)
+}
+func (m *IPXEBuilderListArgs) XXX_Size() int {
+	return xxx_messageInfo_IPXEBuilderListArgs.Size(m)
+}
+func (m *IPXEBuilderListArgs) XXX_DiscardUnknown() {
+	xxx_messageInfo_IPXEBuilderListArgs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IPXEBuilderListArgs proto.InternalMessageInfo
+
 type IPXEStatus struct {
 	Delta                int64    `protobuf:"varint,1,opt,name=Delta,proto3" json:"Delta,omitempty"`
-	URL                  string   `protobuf:"bytes,4,opt,name=URL,proto3" json:"URL,omitempty"`
+	URL                  string   `protobuf:"bytes,2,opt,name=URL,proto3" json:"URL,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -99,7 +201,7 @@ func (m *IPXEStatus) Reset()         { *m = IPXEStatus{} }
 func (m *IPXEStatus) String() string { return proto.CompactTextString(m) }
 func (*IPXEStatus) ProtoMessage()    {}
 func (*IPXEStatus) Descriptor() ([]byte, []int) {
-	return fileDescriptor_74c3654a0f30563d, []int{1}
+	return fileDescriptor_74c3654a0f30563d, []int{3}
 }
 
 func (m *IPXEStatus) XXX_Unmarshal(b []byte) error {
@@ -134,9 +236,51 @@ func (m *IPXEStatus) GetURL() string {
 	return ""
 }
 
+type IPXEBuilderListReply struct {
+	IPXEs                []*IPXEOut `protobuf:"bytes,1,rep,name=IPXEs,proto3" json:"IPXEs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *IPXEBuilderListReply) Reset()         { *m = IPXEBuilderListReply{} }
+func (m *IPXEBuilderListReply) String() string { return proto.CompactTextString(m) }
+func (*IPXEBuilderListReply) ProtoMessage()    {}
+func (*IPXEBuilderListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_74c3654a0f30563d, []int{4}
+}
+
+func (m *IPXEBuilderListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_IPXEBuilderListReply.Unmarshal(m, b)
+}
+func (m *IPXEBuilderListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_IPXEBuilderListReply.Marshal(b, m, deterministic)
+}
+func (m *IPXEBuilderListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IPXEBuilderListReply.Merge(m, src)
+}
+func (m *IPXEBuilderListReply) XXX_Size() int {
+	return xxx_messageInfo_IPXEBuilderListReply.Size(m)
+}
+func (m *IPXEBuilderListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_IPXEBuilderListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IPXEBuilderListReply proto.InternalMessageInfo
+
+func (m *IPXEBuilderListReply) GetIPXEs() []*IPXEOut {
+	if m != nil {
+		return m.IPXEs
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*IPXE)(nil), "iPXEBuilder.IPXE")
+	proto.RegisterType((*IPXEOut)(nil), "iPXEBuilder.IPXEOut")
+	proto.RegisterType((*IPXEBuilderListArgs)(nil), "iPXEBuilder.IPXEBuilderListArgs")
 	proto.RegisterType((*IPXEStatus)(nil), "iPXEBuilder.IPXEStatus")
+	proto.RegisterType((*IPXEBuilderListReply)(nil), "iPXEBuilder.IPXEBuilderListReply")
 }
 
 func init() {
@@ -144,20 +288,26 @@ func init() {
 }
 
 var fileDescriptor_74c3654a0f30563d = []byte{
-	// 205 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xca, 0x2c, 0xa8, 0x48,
-	0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xce, 0x0c, 0x88, 0x70, 0x75, 0x2a, 0xcd, 0xcc,
-	0x49, 0x49, 0x2d, 0x52, 0x2a, 0xe0, 0x62, 0xf1, 0x0c, 0x88, 0x70, 0x15, 0x92, 0xe2, 0xe2, 0x08,
-	0xc8, 0x49, 0x2c, 0x49, 0xcb, 0x2f, 0xca, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0xf3,
-	0x85, 0xc4, 0xb8, 0xd8, 0x5c, 0x8a, 0x32, 0xcb, 0x52, 0x8b, 0x24, 0x98, 0xc0, 0x32, 0x50, 0x9e,
-	0x90, 0x0c, 0x17, 0xa7, 0x6b, 0x45, 0x49, 0x6a, 0x5e, 0x71, 0x66, 0x7e, 0x9e, 0x04, 0x33, 0x58,
-	0x0a, 0x21, 0x00, 0xd2, 0x15, 0x9c, 0x5c, 0x94, 0x59, 0x50, 0x22, 0xc1, 0x02, 0xd1, 0x05, 0xe1,
-	0x29, 0x99, 0x70, 0x71, 0x81, 0x6c, 0x0c, 0x2e, 0x49, 0x2c, 0x29, 0x2d, 0x16, 0x12, 0xe1, 0x62,
-	0x75, 0x49, 0xcd, 0x29, 0x49, 0x04, 0x5b, 0xca, 0x1c, 0x04, 0xe1, 0x08, 0x09, 0x70, 0x31, 0x87,
-	0x06, 0xf9, 0x40, 0x35, 0x82, 0x98, 0x46, 0xee, 0x5c, 0xdc, 0x9e, 0x08, 0x67, 0x0b, 0x59, 0x70,
-	0xb1, 0x39, 0x17, 0xa5, 0x26, 0x96, 0xa4, 0x0a, 0x09, 0xea, 0x21, 0x79, 0x47, 0x0f, 0xa4, 0x46,
-	0x4a, 0x1c, 0x43, 0x08, 0x62, 0x99, 0x12, 0x83, 0x01, 0x63, 0x12, 0x1b, 0x38, 0x10, 0x8c, 0x01,
-	0x01, 0x00, 0x00, 0xff, 0xff, 0x72, 0x80, 0xdc, 0x22, 0x12, 0x01, 0x00, 0x00,
+	// 304 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0x4f, 0x4f, 0x83, 0x40,
+	0x10, 0xc5, 0xe5, 0x4f, 0xab, 0x1d, 0x12, 0xa3, 0x23, 0xea, 0x86, 0x78, 0x40, 0x4e, 0x8d, 0x07,
+	0x62, 0xaa, 0x07, 0xaf, 0xd6, 0x72, 0x20, 0x36, 0x91, 0xd0, 0x98, 0xf4, 0x8a, 0xb2, 0x9a, 0x4d,
+	0xb0, 0x90, 0x65, 0x31, 0xf5, 0xe0, 0xb7, 0xf0, 0x03, 0x9b, 0x5d, 0x50, 0x2a, 0xa4, 0xde, 0x78,
+	0x6f, 0x67, 0xde, 0xfe, 0x1e, 0x59, 0x00, 0x56, 0xac, 0xa9, 0x5f, 0xf0, 0x5c, 0xe4, 0x68, 0xb1,
+	0x68, 0x19, 0x4c, 0x2b, 0x96, 0xa5, 0x94, 0x7b, 0x05, 0x98, 0x61, 0xb4, 0x0c, 0xd0, 0x81, 0xbd,
+	0x28, 0x4b, 0xc4, 0x4b, 0xce, 0xdf, 0x88, 0xe6, 0x6a, 0xe3, 0x51, 0xfc, 0xab, 0xf1, 0x04, 0x86,
+	0x33, 0xce, 0xde, 0x29, 0x27, 0xba, 0x3a, 0x69, 0x14, 0x9e, 0xc1, 0x28, 0x58, 0x0b, 0xba, 0x2a,
+	0x59, 0xbe, 0x22, 0x86, 0x3a, 0x6a, 0x0d, 0xb9, 0xb5, 0x78, 0xe6, 0xac, 0x10, 0xc4, 0xac, 0xb7,
+	0x6a, 0xe5, 0x7d, 0xc2, 0xae, 0xbc, 0xf1, 0xa1, 0x12, 0xb8, 0x0f, 0x7a, 0x98, 0x36, 0xd7, 0xe9,
+	0x61, 0xfa, 0x07, 0x42, 0xdf, 0x0a, 0x61, 0x6c, 0x87, 0x30, 0xbb, 0x10, 0x07, 0x60, 0x3c, 0xc6,
+	0x73, 0x32, 0x50, 0xbe, 0xfc, 0xf4, 0x8e, 0xe1, 0x28, 0x6c, 0xfb, 0xcf, 0x59, 0x29, 0x6e, 0xf9,
+	0x6b, 0xe9, 0x5d, 0x03, 0x48, 0x7b, 0x21, 0x12, 0x51, 0x95, 0x68, 0xc3, 0x60, 0x46, 0x33, 0x91,
+	0x28, 0x36, 0x23, 0xae, 0xc5, 0x4f, 0x98, 0xde, 0x86, 0x4d, 0xc1, 0xee, 0x84, 0xc5, 0xb4, 0xc8,
+	0x3e, 0xf0, 0x02, 0x06, 0xd2, 0x2f, 0x89, 0xe6, 0x1a, 0x63, 0x6b, 0x62, 0xfb, 0x1b, 0xbf, 0xdc,
+	0x6f, 0xda, 0xc7, 0xf5, 0xc8, 0xe4, 0x4b, 0x03, 0x6b, 0x23, 0x04, 0x6f, 0x60, 0x78, 0xc7, 0x69,
+	0x22, 0x28, 0x1e, 0xf6, 0xd6, 0x9c, 0xd3, 0x9e, 0x55, 0x13, 0x7b, 0x3b, 0x97, 0x1a, 0xde, 0x83,
+	0x29, 0x11, 0xd0, 0xed, 0x0d, 0x75, 0xda, 0x3a, 0xe7, 0xff, 0x4d, 0xa8, 0x0a, 0x4f, 0x43, 0xf5,
+	0x58, 0xae, 0xbe, 0x03, 0x00, 0x00, 0xff, 0xff, 0x47, 0x2a, 0x05, 0xfa, 0x3a, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -173,6 +323,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type IPXEBuilderClient interface {
 	Create(ctx context.Context, in *IPXE, opts ...grpc.CallOption) (IPXEBuilder_CreateClient, error)
+	List(ctx context.Context, in *IPXEBuilderListArgs, opts ...grpc.CallOption) (*IPXEBuilderListReply, error)
 }
 
 type iPXEBuilderClient struct {
@@ -215,9 +366,19 @@ func (x *iPXEBuilderCreateClient) Recv() (*IPXEStatus, error) {
 	return m, nil
 }
 
+func (c *iPXEBuilderClient) List(ctx context.Context, in *IPXEBuilderListArgs, opts ...grpc.CallOption) (*IPXEBuilderListReply, error) {
+	out := new(IPXEBuilderListReply)
+	err := c.cc.Invoke(ctx, "/iPXEBuilder.IPXEBuilder/List", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IPXEBuilderServer is the server API for IPXEBuilder service.
 type IPXEBuilderServer interface {
 	Create(*IPXE, IPXEBuilder_CreateServer) error
+	List(context.Context, *IPXEBuilderListArgs) (*IPXEBuilderListReply, error)
 }
 
 // UnimplementedIPXEBuilderServer can be embedded to have forward compatible implementations.
@@ -226,6 +387,9 @@ type UnimplementedIPXEBuilderServer struct {
 
 func (*UnimplementedIPXEBuilderServer) Create(req *IPXE, srv IPXEBuilder_CreateServer) error {
 	return status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (*UnimplementedIPXEBuilderServer) List(ctx context.Context, req *IPXEBuilderListArgs) (*IPXEBuilderListReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
 
 func RegisterIPXEBuilderServer(s *grpc.Server, srv IPXEBuilderServer) {
@@ -253,10 +417,33 @@ func (x *iPXEBuilderCreateServer) Send(m *IPXEStatus) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _IPXEBuilder_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IPXEBuilderListArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IPXEBuilderServer).List(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/iPXEBuilder.IPXEBuilder/List",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IPXEBuilderServer).List(ctx, req.(*IPXEBuilderListArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _IPXEBuilder_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "iPXEBuilder.IPXEBuilder",
 	HandlerType: (*IPXEBuilderServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "List",
+			Handler:    _IPXEBuilder_List_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Create",
