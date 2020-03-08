@@ -35,9 +35,12 @@
 
 stages:
   - ipxebuilderd:unitTest
+  - ipxectl:unitTest
   - ipxebuilderd:integrationTest
+  - ipxectl:integrationTest
   - ipxebuilderd:buildAndPushImage
   - ipxebuilderd:buildAndPushManifestAndBinaries
+  - ipxectl:buildAndPushBinaries
   - ipxebuilderd:buildAndPushChart
 
 # Unit tests
@@ -52,6 +55,17 @@ ipxebuilderd:unitTestARM64:
   script:
     - dibs -unitTests -target linux -platform linux/arm64 -docker
 
+ipxectl:unitTestAMD64:
+  <<: *dibsJob
+  stage: ipxectl:unitTest
+  script:
+    - dibs -unitTests -target ipxectl-linux -platform linux/amd64 -docker
+ipxectl:unitTestARM64:
+  <<: *dibsJob
+  stage: ipxectl:unitTest
+  script:
+    - dibs -unitTests -target ipxectl-linux -platform linux/arm64 -docker
+
 # Integration tests
 ipxebuilderd:integrationTestAMD64:
   <<: *dibsJob
@@ -63,6 +77,17 @@ ipxebuilderd:integrationTestARM64:
   stage: ipxebuilderd:integrationTest
   script:
     - dibs -integrationTests -target linux -platform linux/arm64 -docker
+
+ipxectl:integrationTestAMD64:
+  <<: *dibsJob
+  stage: ipxectl:integrationTest
+  script:
+    - dibs -integrationTests -target ipxectl-linux -platform linux/amd64 -docker
+ipxectl:integrationTestARM64:
+  <<: *dibsJob
+  stage: ipxectl:integrationTest
+  script:
+    - dibs -integrationTests -target ipxectl-linux -platform linux/arm64 -docker
 
 # Image tests
 # amd64 is disabled for now due to a GitLab bug where it does not exit after being run
@@ -145,6 +170,33 @@ ipxebuilderd:buildAndPushBinariesARM64:
     - dibs -pushBinary -target linux -platform linux/arm64
   artifacts:
     name: ipxebuilderd-binaries-arm64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+
+ipxectl:buildAndPushBinariesAMD64:
+  <<: *dibsJob
+  stage: ipxectl:buildAndPushBinaries
+  script:
+    - dibs -build -target ipxectl-linux -platform linux/amd64 -docker
+    - dibs -pushBinary -target ipxectl-linux -platform linux/amd64
+  artifacts:
+    name: ipxectl-binaries-amd64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+ipxectl:buildAndPushBinariesARM64:
+  <<: *dibsJob
+  stage: ipxectl:buildAndPushBinaries
+  script:
+    - dibs -build -target ipxectl-linux -platform linux/arm64 -docker
+    - dibs -pushBinary -target ipxectl-linux -platform linux/arm64
+  artifacts:
+    name: ipxectl-binaries-arm64
     paths:
       - .bin/binaries
     expire_in: 1 month
