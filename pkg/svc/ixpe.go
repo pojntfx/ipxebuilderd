@@ -4,6 +4,7 @@ package svc
 //go:generate sh -c "protoc --go_out=paths=source_relative,plugins=grpc:../proto/generated -I=../proto ../proto/*.proto"
 
 import (
+	"context"
 	"errors"
 	"net/url"
 	"path"
@@ -135,4 +136,38 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 			return err
 		}
 	}
+}
+
+// List returns the iPXEs.
+func (i *IPXEBuilder) List(_ context.Context, req *iPXEBuilder.IPXEBuilderListArgs) (*iPXEBuilder.IPXEBuilderListReply, error) {
+	doneChan := make(chan struct{})
+	defer close(doneChan)
+
+	objects := i.s3Client.ListObjectsV2(i.S3BucketName, "", true, doneChan)
+
+	var ipxes []*iPXEBuilder.IPXEOut
+	for object := range objects {
+		iPXEPath, iPXEFile := path.Split(object.Key)
+		iPXEPathParts := strings.Split(iPXEPath, "/")
+		iPXEFileParts := strings.Split(iPXEFile, ".")
+
+		url, err := i.getURL(object.Key)
+		if err != nil {
+			return nil, err
+		}
+
+		iPXE := iPXEBuilder.IPXEOut{
+			Id:        iPXEPathParts[0],
+			Platform:  iPXEPathParts[1],
+			Driver:    iPXEFileParts[0],
+			Extension: iPXEFileParts[1],
+			URL:       url,
+		}
+
+		ipxes = append(ipxes, &iPXE)
+	}
+
+	return &iPXEBuilder.IPXEBuilderListReply{
+		IPXEs: ipxes,
+	}, nil
 }

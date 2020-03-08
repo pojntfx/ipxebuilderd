@@ -5,6 +5,7 @@ package iPXEBuilder;
 // IPXEBuilder manages iPXEs.
 service IPXEBuilder {
   rpc Create(IPXE) returns (stream IPXEStatus) {};
+  rpc List(IPXEBuilderListArgs) returns (IPXEBuilderListReply);
 }
 
 message IPXE {
@@ -14,7 +15,19 @@ message IPXE {
   string Script = 4;
 }
 
+message IPXEOut {
+  string Id = 1;
+  string Platform = 2;
+  string Driver = 3;
+  string Extension = 4;
+  string URL = 5;
+}
+
+message IPXEBuilderListArgs {};
+
 message IPXEStatus {
   int64 Delta = 1;
-  string URL = 4;
+  string URL = 2;
 }
+
+message IPXEBuilderListReply { repeated IPXEOut IPXEs = 1; };
