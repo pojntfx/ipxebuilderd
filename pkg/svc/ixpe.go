@@ -34,7 +34,6 @@ type IPXEBuilder struct {
 }
 
 func (i *IPXEBuilder) getURL(objectName string) (string, error) {
-	// TODO: Specify if minio is secure or not (this should also be set in the `Connect` func with the SSL param and be false by default)
 	u, err := url.Parse("http://")
 	if i.S3Secure {
 		u, err = url.Parse("https://")
@@ -94,7 +93,7 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 			delta--
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
 				Delta: delta,
-				URL:   "",
+				Id:    "",
 			}); err != nil {
 				return err
 			}
@@ -106,7 +105,7 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 			delta--
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
 				Delta: delta,
-				URL:   "",
+				Id:    "",
 			}); err != nil {
 				return err
 			}
@@ -121,14 +120,9 @@ func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_
 				return err
 			}
 
-			url, err := i.getURL(objectName)
-			if err != nil {
-				return err
-			}
-
 			if err := srv.Send(&iPXEBuilder.IPXEStatus{
 				Delta: 0,
-				URL:   url,
+				Id:    objectName,
 			}); err != nil {
 				return err
 			}
