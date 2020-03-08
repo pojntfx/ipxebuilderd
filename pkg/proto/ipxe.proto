@@ -31,7 +31,7 @@ message IPXEId { string Id = 1; }
 
 message IPXEStatus {
   int64 Delta = 1;
-  string URL = 2;
+  string Id = 2;
 }
 
 message IPXEBuilderListReply { repeated IPXEOut IPXEs = 1; };
