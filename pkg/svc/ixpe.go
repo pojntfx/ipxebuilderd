@@ -147,17 +147,17 @@ func (i *IPXEBuilder) List(_ context.Context, req *iPXEBuilder.IPXEBuilderListAr
 
 	var ipxes []*iPXEBuilder.IPXEOut
 	for object := range objects {
-		iPXEPath, iPXEFile := path.Split(object.Key)
-		iPXEPathParts := strings.Split(iPXEPath, "/")
-		iPXEFileParts := strings.Split(iPXEFile, ".")
-
 		url, err := i.getURL(object.Key)
 		if err != nil {
 			return nil, err
 		}
 
+		iPXEPath, iPXEFile := path.Split(object.Key)
+		iPXEPathParts := strings.Split(iPXEPath, "/")
+		iPXEFileParts := strings.Split(iPXEFile, ".")
+
 		iPXE := iPXEBuilder.IPXEOut{
-			Id:        iPXEPathParts[0],
+			Id:        object.Key,
 			Platform:  iPXEPathParts[1],
 			Driver:    iPXEFileParts[0],
 			Extension: iPXEFileParts[1],
@@ -169,5 +169,30 @@ func (i *IPXEBuilder) List(_ context.Context, req *iPXEBuilder.IPXEBuilderListAr
 
 	return &iPXEBuilder.IPXEBuilderListReply{
 		IPXEs: ipxes,
+	}, nil
+}
+
+// Get gets one of the iPXEs.
+func (i *IPXEBuilder) Get(_ context.Context, req *iPXEBuilder.IPXEId) (*iPXEBuilder.IPXEOut, error) {
+	object, err := i.s3Client.StatObject(i.S3BucketName, req.GetId(), minio.StatObjectOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	url, err := i.getURL(object.Key)
+	if err != nil {
+		return nil, err
+	}
+
+	iPXEPath, iPXEFile := path.Split(object.Key)
+	iPXEPathParts := strings.Split(iPXEPath, "/")
+	iPXEFileParts := strings.Split(iPXEFile, ".")
+
+	return &iPXEBuilder.IPXEOut{
+		Id:        object.Key,
+		Platform:  iPXEPathParts[1],
+		Driver:    iPXEFileParts[0],
+		Extension: iPXEFileParts[1],
+		URL:       url,
 	}, nil
 }
