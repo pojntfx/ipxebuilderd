@@ -6,6 +6,7 @@ package iPXEBuilder;
 service IPXEBuilder {
   rpc Create(IPXE) returns (stream IPXEStatus) {};
   rpc List(IPXEBuilderListArgs) returns (IPXEBuilderListReply);
+  rpc Get(IPXEId) returns (IPXEOut);
 }
 
 message IPXE {
@@ -24,6 +25,8 @@ message IPXEOut {
 }
 
 message IPXEBuilderListArgs {};
+
+message IPXEId { string Id = 1; }
 
 message IPXEStatus {
   int64 Delta = 1;
