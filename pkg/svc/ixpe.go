@@ -16,6 +16,8 @@ import (
 	"github.com/pojntfx/ipxebuilderd/pkg/workers"
 	uuid "github.com/satori/go.uuid"
 	"gitlab.com/bloom42/libs/rz-go/log"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -176,7 +178,12 @@ func (i *IPXEBuilder) List(_ context.Context, req *iPXEBuilder.IPXEBuilderListAr
 func (i *IPXEBuilder) Get(_ context.Context, req *iPXEBuilder.IPXEId) (*iPXEBuilder.IPXEOut, error) {
 	object, err := i.s3Client.StatObject(i.S3BucketName, req.GetId(), minio.StatObjectOptions{})
 	if err != nil {
-		return nil, err
+		statusErr := status.Errorf(codes.Unknown, err.Error())
+		if err.Error() == "The specified key does not exist." {
+			statusErr = status.Errorf(codes.NotFound, "iPXE not found")
+		}
+
+		return nil, statusErr
 	}
 
 	url, err := i.getURL(object.Key)
@@ -194,5 +201,20 @@ func (i *IPXEBuilder) Get(_ context.Context, req *iPXEBuilder.IPXEId) (*iPXEBuil
 		Driver:    iPXEFileParts[0],
 		Extension: iPXEFileParts[1],
 		URL:       url,
+	}, nil
+}
+
+// Delete deletes an iPXE.
+func (i *IPXEBuilder) Delete(_ context.Context, req *iPXEBuilder.IPXEId) (*iPXEBuilder.IPXEId, error) {
+	id := req.GetId()
+
+	if err := i.s3Client.RemoveObject(i.S3BucketName, id); err != nil {
+		return &iPXEBuilder.IPXEId{
+			Id: id,
+		}, err
+	}
+
+	return &iPXEBuilder.IPXEId{
+		Id: id,
 	}, nil
 }
