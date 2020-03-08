@@ -12,16 +12,13 @@ import (
 	"strings"
 
 	"github.com/minio/minio-go/v6"
+	"github.com/pojntfx/ipxebuilderd/pkg/constants"
 	iPXEBuilder "github.com/pojntfx/ipxebuilderd/pkg/proto/generated"
 	"github.com/pojntfx/ipxebuilderd/pkg/workers"
 	uuid "github.com/satori/go.uuid"
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-)
-
-const (
-	totalCompileSteps = 2247
 )
 
 // IPXEBuilder manages iPXEs.
@@ -80,7 +77,7 @@ func (i *IPXEBuilder) upload(path string) error {
 
 // Create creates an iPXE.
 func (i *IPXEBuilder) Create(req *iPXEBuilder.IPXE, srv iPXEBuilder.IPXEBuilder_CreateServer) error {
-	delta := int64(totalCompileSteps)
+	delta := int64(constants.TotalCompileSteps)
 	stdoutChan, stderrChan, doneChan, errChan := make(chan string), make(chan string), make(chan string), make(chan error)
 
 	go i.Builder.Build(req.GetScript(), req.GetPlatform(), req.GetDriver(), req.GetExtension(), stdoutChan, stderrChan, doneChan, errChan)

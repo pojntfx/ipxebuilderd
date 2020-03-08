@@ -1,0 +1,7 @@
+ipxe:
+  platform: bin-x86_64-efi
+  driver: ipxe
+  extension: efi
+  script: |
+    #!ipxe
+    autoboot

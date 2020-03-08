@@ -3,6 +3,7 @@ module github.com/pojntfx/ipxebuilderd
 go 1.14
 
 require (
+	github.com/cheggaaa/pb/v3 v3.0.4
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/golang/protobuf v1.3.4
@@ -11,6 +12,7 @@ require (
 	github.com/mholt/archiver/v3 v3.3.0
 	github.com/minio/minio-go/v6 v6.0.49
 	github.com/otiai10/copy v1.0.2
+	github.com/pojntfx/gon2n v0.0.0-20200127160701-0a9ec9069a66
 	github.com/rakyll/statik v0.1.7
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/cobra v0.0.6
