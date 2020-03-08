@@ -7,6 +7,7 @@ service IPXEBuilder {
   rpc Create(IPXE) returns (stream IPXEStatus) {};
   rpc List(IPXEBuilderListArgs) returns (IPXEBuilderListReply);
   rpc Get(IPXEId) returns (IPXEOut);
+  rpc Delete(IPXEId) returns (IPXEId);
 }
 
 message IPXE {
