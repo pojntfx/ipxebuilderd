@@ -2,6 +2,8 @@
 
 Build daemon and CLI for iPXE.
 
+[![pipeline status](https://gitlab.com/pojntfx/ipxebuilderd/badges/master/pipeline.svg)](https://gitlab.com/pojntfx/ipxebuilderd/commits/master)
+
 ## Overview
 
 `ipxebuilderd` is a build daemon with a CLI for [iPXE](https://ipxe.org), the leading open source network boot firmware. It is built of two components:
