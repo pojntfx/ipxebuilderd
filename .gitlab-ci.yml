@@ -34,13 +34,21 @@
     - docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
 
 stages:
+  # Unit tests
   - ipxebuilderd:unitTest
   - ipxectl:unitTest
+  # Integration tests
   - ipxebuilderd:integrationTest
   - ipxectl:integrationTest
+  # Build and push images
   - ipxebuilderd:buildAndPushImage
+  # Build and push manifest and binaries
   - ipxebuilderd:buildAndPushManifestAndBinaries
+  # Build and push binaries
   - ipxectl:buildAndPushBinaries
+  # Chart integration tests
+  - ipxebuilderd:chartIntegrationTest
+  # Build and push charts
   - ipxebuilderd:buildAndPushChart
 
 # Unit tests
@@ -103,22 +111,6 @@ ipxebuilderd:imageTestsARM64:
   script:
     - dibs -buildImage -target linux -platform linux/arm64
     - dibs -imageTests -target linux -platform linux/arm64
-
-# Chart tests
-ipxebuilderd:chartTestsAMD64:
-  <<: *dibsJob
-  stage: ipxebuilderd:integrationTest
-  script:
-    - dibs -buildImage -target linux -platform linux/amd64
-    - dibs -buildManifest -target linux
-    - dibs -chartTests -target linux -platform linux/amd64 -docker
-ipxebuilderd:chartTestsARM64:
-  <<: *dibsJob
-  stage: ipxebuilderd:integrationTest
-  script:
-    - dibs -buildImage -target linux -platform linux/arm64
-    - dibs -buildManifest -target linux
-    - dibs -chartTests -target linux -platform linux/arm64 -docker
 
 # Build and push image
 ipxebuilderd:buildAndPushImageAMD64:
@@ -202,6 +194,18 @@ ipxectl:buildAndPushBinariesARM64:
     expire_in: 1 month
   only:
     - tags
+
+# Chart tests
+ipxebuilderd:chartTestsAMD64:
+  <<: *dibsJob
+  stage: ipxebuilderd:chartIntegrationTest
+  script:
+    - dibs -chartTests -target linux -platform linux/amd64 -docker
+ipxebuilderd:chartTestsARM64:
+  <<: *dibsJob
+  stage: ipxebuilderd:chartIntegrationTest
+  script:
+    - dibs -chartTests -target linux -platform linux/arm64 -docker
 
 # Build and push chart
 ipxebuilderd:buildAndPushChart:
