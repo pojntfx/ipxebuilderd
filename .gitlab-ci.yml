@@ -201,11 +201,15 @@ ipxebuilderd:chartTestsAMD64:
   stage: ipxebuilderd:chartIntegrationTest
   script:
     - dibs -chartTests -target linux -platform linux/amd64 -docker
+  only:
+    - tags
 ipxebuilderd:chartTestsARM64:
   <<: *dibsJob
   stage: ipxebuilderd:chartIntegrationTest
   script:
     - dibs -chartTests -target linux -platform linux/arm64 -docker
+  only:
+    - tags
 
 # Build and push chart
 ipxebuilderd:buildAndPushChart:
