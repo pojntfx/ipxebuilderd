@@ -42,7 +42,7 @@ spec:
               cpu: {{ .Values.resources.cpu }}
           {{ end }}
           ports:
-            - containerPort: 1440
+            - containerPort: 1010
             {{ if and .Values.meta.dev .Values.meta.debug }}
             - containerPort: {{ .Values.meta.debugPort }}
             {{end}}
@@ -59,8 +59,8 @@ spec:
   type: NodePort
   ports:
     - name: grpc
-      port: 1440
-      targetPort: 1440
+      port: 1010
+      targetPort: 1010
       nodePort: {{ .Values.ingress.nodePort }}
     - name: debug
       port: {{ .Values.meta.debugNodePort }}
@@ -96,8 +96,8 @@ spec:
     app: ipxebuilderd-{{ .Release.Name }}
   ports:
     - name: grpc
-      port: 1440
-      targetPort: 1440
+      port: 1010
+      targetPort: 1010
 
 ---
 apiVersion: networking.k8s.io/v1beta1
