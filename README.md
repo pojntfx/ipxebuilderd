@@ -50,11 +50,11 @@ Usage:
 Flags:
   -h, --help                                   help for ipxebuilderd
   -f, --ipxebuilderd.configFile string         Configuration file to use.
-  -l, --ipxebuilderd.listenHostPort string     TCP listen host:port. (default "0.0.0.0:1440")
+  -l, --ipxebuilderd.listenHostPort string     TCP listen host:port. (default "0.0.0.0:1010")
   -u, --ipxebuilderd.s3AccessKey string        Access key of the S3 server to connect to. (default "ipxebuilderUser")
   -b, --ipxebuilderd.s3Bucket string           S3 bucket to use. (default "ipxebuilderd")
-  -s, --ipxebuilderd.s3HostPort string         Host:port of the S3 server to connect to. (default "minio.ipxebuilderd.felicitas.pojtinger.com")
-  -o, --ipxebuilderd.s3HostPortPublic string   Public host:port of the S3 server (will be used in shared links). (default "minio.ipxebuilderd.felicitas.pojtinger.com")
+  -s, --ipxebuilderd.s3HostPort string         Host:port of the S3 server to connect to. (default "minio.ipxebuilderd.example.com")
+  -o, --ipxebuilderd.s3HostPortPublic string   Public host:port of the S3 server (will be used in shared links). (default "minio.ipxebuilderd.example.com")
   -p, --ipxebuilderd.s3SecretKey string        Secret key of the S3 server to connect to. (default "ipxebuilderdPass")
   -z, --ipxebuilderd.secure                    Whether to use a secure connection to S3.
 ```

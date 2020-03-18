@@ -13,8 +13,8 @@ resources:
   maxReplicas: 10
 
 ingress:
-  nodePort: 31440
-  domain: ipxebuilderd.felicitas.pojtinger.com
+  nodePort: 31010
+  domain: ipxebuilderd.example.com
   path: /
 
 S3:
@@ -25,7 +25,7 @@ minio:
   ingress:
     enabled: true
     hosts:
-      - name: minio.ipxebuilderd.felicitas.pojtinger.com
+      - name: minio.ipxebuilderd.example.com
   accessKey:
     password: ipxebuilderUser
   secretKey:

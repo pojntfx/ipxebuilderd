@@ -123,8 +123,8 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, constants.ConfigurationFileDocs)
 	rootCmd.PersistentFlags().StringVarP(&hostPortFlag, listenHostPortKey, "l", constants.IPXEBuilderdHostPortPortDefault, "TCP listen host:port.")
-	rootCmd.PersistentFlags().StringVarP(&s3HostPortFlag, s3HostPortKey, "s", "minio.ipxebuilderd.felicitas.pojtinger.com", "Host:port of the S3 server to connect to.")
-	rootCmd.PersistentFlags().StringVarP(&s3HostPortPublicFlag, s3HostPortPublicKey, "o", "minio.ipxebuilderd.felicitas.pojtinger.com", "Public host:port of the S3 server (will be used in shared links).")
+	rootCmd.PersistentFlags().StringVarP(&s3HostPortFlag, s3HostPortKey, "s", "minio.ipxebuilderd.example.com", "Host:port of the S3 server to connect to.")
+	rootCmd.PersistentFlags().StringVarP(&s3HostPortPublicFlag, s3HostPortPublicKey, "o", "minio.ipxebuilderd.example.com", "Public host:port of the S3 server (will be used in shared links).")
 	rootCmd.PersistentFlags().StringVarP(&s3AccessKeyFlag, s3AccessKeyKey, "u", "ipxebuilderUser", "Access key of the S3 server to connect to.")
 	rootCmd.PersistentFlags().StringVarP(&s3SecretKeyFlag, s3SecretKeyKey, "p", "ipxebuilderdPass", "Secret key of the S3 server to connect to.")
 	rootCmd.PersistentFlags().StringVarP(&s3BucketFlag, s3BucketKey, "b", "ipxebuilderd", "S3 bucket to use.")
