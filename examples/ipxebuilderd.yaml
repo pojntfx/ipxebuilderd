@@ -1,5 +1,5 @@
 ipxebuilderd:
-  listenHostPort: localhost:1010
+  listenHostPort: :1010
   s3HostPort: minio.ipxebuilderd.example.com
   s3AccessKey: ipxebuilderUser
   s3SecretKey: ipxebuilderdPass
